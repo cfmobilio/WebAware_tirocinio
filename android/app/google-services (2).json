@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "423070487370",
+    "firebase_url": "https://webaware-fea8d-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "webaware-fea8d",
+    "storage_bucket": "webaware-fea8d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423070487370:android:32d37efdf9940e6b2667b3",
+        "android_client_info": {
+          "package_name": "com.example.wa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "423070487370-7la5hquoggq4aq79f5vdom1pk94qmkp4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wa",
+            "certificate_hash": "4c509e85baa0d48f0798bef46d08bf2266ea0519"
+          }
+        },
+        {
+          "client_id": "423070487370-bpmt5dd32083a47rgbnun8501i13e68g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjiz-VYvbpNAKF1asbf_D_ILx9dTGFOUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423070487370-bpmt5dd32083a47rgbnun8501i13e68g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
