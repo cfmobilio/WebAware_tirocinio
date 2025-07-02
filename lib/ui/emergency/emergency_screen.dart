@@ -28,9 +28,23 @@ class EmergencyPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Emergenze"),
         backgroundColor: Colors.deepOrange,
+        title: const Text(
+          "WebAware",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+        ],
       ),
+
       body: ListView.builder(
         itemCount: emergenze.length,
         itemBuilder: (context, index) {

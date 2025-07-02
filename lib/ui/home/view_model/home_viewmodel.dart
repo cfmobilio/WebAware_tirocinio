@@ -19,6 +19,12 @@ class HomeViewModel {
     "Privacy online": "privacy",
     "Cyberbullismo": "cyberbullismo",
     "Phishing": "phishing",
-    // ...
+    "Dipendenza dai social": "dipendenza",
+    "Fake news": "fake",
+    "Sicurezza account":"sicurezza",
+    "Truffe online":"truffe",
+    "Protezione dati": "dati",
+    "Netiquette": "netiquette",
+    "Navigazione sicura": "navigazione"
   };
 }

@@ -22,9 +22,9 @@ class _QuizPageState extends State<QuizPage> {
     {"titolo": "Fake News", "icona": "fake.png", "key": "fake"},
     {"titolo": "Sicurezza account", "icona": "shield.png", "key": "sicurezza"},
     {"titolo": "Truffe online", "icona": "scam.png", "key": "truffe"},
-    {"titolo": "Protezione dati", "icona": "security.png", "key": "dati"},
-    {"titolo": "Netiquette", "icona": "netiquette.png", "key": "netiquette"},
-    {"titolo": "Navigazione sicura", "icona": "secure.png", "key": "navigazione"},
+    {"titolo": "Protezione dati", "icona": "data-security.png", "key": "dati"},
+    {"titolo": "Netiquette", "icona": "honesty.png", "key": "netiquette"},
+    {"titolo": "Navigazione sicura", "icona": "online-safety.png", "key": "navigazione"},
   ];
 
   Map<String, int> progressi = {};
@@ -51,7 +51,24 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Quiz")),
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrange,
+        title: const Text(
+          "WebAware",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+        ],
+      ),
+
       body: ListView.builder(
         itemCount: quizList.length,
         itemBuilder: (context, index) {
@@ -72,6 +89,39 @@ class _QuizPageState extends State<QuizPage> {
           );
         },
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.deepOrange,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.white70,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/profile');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/quiz');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/simulation');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/extra');
+              break;
+            case 4:
+              Navigator.pushNamed(context, '/emergency');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
+          BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
+          BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
+          BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
+        ],
+      ),
+
     );
   }
 }

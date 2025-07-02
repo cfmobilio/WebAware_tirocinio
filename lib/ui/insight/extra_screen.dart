@@ -14,9 +14,23 @@ class ExtraPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Extra"),
         backgroundColor: Colors.deepOrange,
+        title: const Text(
+          "WebAware",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+        ],
       ),
+
       body: ListView.builder(
         itemCount: argomenti.length,
         itemBuilder: (context, index) {

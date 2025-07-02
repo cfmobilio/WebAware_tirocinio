@@ -9,7 +9,23 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Benvenuto")),
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrange,
+        title: const Text(
+          "WebAware",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+        ],
+      ),
       body: ListView.builder(
         itemCount: vm.argomentiList.length,
         itemBuilder: (context, index) {
@@ -55,7 +71,6 @@ class HomeView extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-
     );
   }
 }
