@@ -6,8 +6,11 @@ import '../../models/subject_model.dart';
 class HomeView extends StatelessWidget {
   final HomeViewModel vm = HomeViewModel();
 
+  HomeView({super.key});
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
@@ -27,14 +30,35 @@ class HomeView extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
+        padding: const EdgeInsets.all(8.0),
         itemCount: vm.argomentiList.length,
         itemBuilder: (context, index) {
           Subject subject = vm.argomentiList[index];
           return SubjectCard(
             subject: subject,
             onTap: () {
-              final key = vm.argomentiKey[subject.titolo] ?? "altro";
-              Navigator.pushNamed(context, '/topics', arguments: key);
+              print('=== INIZIO NAVIGAZIONE ===');
+              print('Subject cliccato: ${subject.titolo}');
+
+              // Usa il metodo sicuro per ottenere la chiave
+              final key = vm.getKeyForSubject(subject.titolo);
+
+              print('Chiave ottenuta: "$key"');
+              print('Tipo chiave: ${key.runtimeType}');
+              print('Tentativo navigazione a /topics');
+
+              try {
+                Navigator.pushNamed(
+                  context,
+                  '/topics',
+                  arguments: key,
+                );
+                print('Navigazione avviata con successo');
+              } catch (e) {
+                print('ERRORE NAVIGAZIONE: $e');
+              }
+
+              print('=== FINE NAVIGAZIONE ===');
             },
           );
         },
@@ -44,10 +68,14 @@ class HomeView extends StatelessWidget {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
+        currentIndex: 0, // Indica che siamo nella home
         onTap: (index) {
+          // Evita di navigare alla stessa pagina
+          if (index == 0) return;
+
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/profile');
+            // Già nella home, non fare nulla
               break;
             case 1:
               Navigator.pushNamed(context, '/quiz');
@@ -64,7 +92,7 @@ class HomeView extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),

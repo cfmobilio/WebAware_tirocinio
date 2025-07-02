@@ -97,7 +97,7 @@ class _QuizPageState extends State<QuizPage> {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/home');
               break;
             case 1:
               Navigator.pushNamed(context, '/quiz');

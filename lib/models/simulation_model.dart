@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Simulazione {
   final String id;
   final String titolo;
@@ -26,6 +28,20 @@ class Simulazione {
       rispostaCorretta: map['rispostaCorretta'] ?? 0,
       feedbackPositivo: map['feedbackPositivo'] ?? '',
       feedbackNegativo: map['feedbackNegativo'] ?? '',
+    );
+  }
+
+
+  factory Simulazione.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    return Simulazione(
+      titolo: data['titolo'] ?? '',
+      descrizione: data['descrizione'] ?? '',
+      scelta: List<String>.from(data['scelta'] ?? []),
+      rispostaCorretta: data['rispostaCorretta'] ?? 0,
+      feedbackPositivo: data['feedbackPositivo'] ?? '',
+      feedbackNegativo: data['feedbackNegativo'] ?? '', id: '',
     );
   }
 }

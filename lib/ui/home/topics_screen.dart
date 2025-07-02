@@ -6,65 +6,218 @@ class TopicsView extends StatelessWidget {
   const TopicsView({super.key});
 
   String? getYoutubeThumbnail(String url) {
-    final uri = Uri.parse(url);
-    final videoId = uri.queryParameters['v'] ?? uri.pathSegments.last;
-    return 'https://img.youtube.com/vi/$videoId/hqdefault.jpg';
+    try {
+      final uri = Uri.parse(url);
+      final videoId = uri.queryParameters['v'] ?? uri.pathSegments.last;
+      return 'https://img.youtube.com/vi/$videoId/hqdefault.jpg';
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final argomentoKey = ModalRoute.of(context)!.settings.arguments as String;
+
+    // Gestione sicura dell'argomento della route
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+
+    if (arguments == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text("Errore")),
+        body: const Center(
+          child: Text("Nessun argomento ricevuto dalla navigazione."),
+        ),
+      );
+    }
+
+    if (arguments is! String) {
+      return Scaffold(
+        appBar: AppBar(title: const Text("Errore")),
+        body: Center(
+          child: Text("Argomento non valido: tipo ${arguments.runtimeType}"),
+        ),
+      );
+    }
+
+    final argomentoKey = arguments;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Argomento")),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('info_argomenti').doc(argomentoKey).get(),
+        future: FirebaseFirestore.instance
+            .collection('info_argomenti')
+            .doc(argomentoKey)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Center(child: Text("Argomento non trovato."));
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text("Errore nel caricamento: ${snapshot.error}"),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Torna indietro"),
+                  ),
+                ],
+              ),
+            );
           }
 
-          final data = snapshot.data!.data() as Map<String, dynamic>;
-          final titolo = data['titolo'] ?? "Senza titolo";
-          final descrizione = data['descrizione'] ?? "";
-          final videoUrl = data['videoUrl'] ?? "";
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            print('Documento non trovato per chiave: $argomentoKey'); // Debug
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text("Argomento '$argomentoKey' non trovato."),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Torna indietro"),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          final data = snapshot.data!.data() as Map<String, dynamic>?;
+
+          if (data == null) {
+            return const Center(
+              child: Text("Dati dell'argomento non disponibili."),
+            );
+          }
+
+          final titolo = data['titolo'] as String? ?? "Senza titolo";
+          final descrizione = data['descrizione'] as String? ?? "";
+          final videoUrl = data['videoUrl'] as String? ?? "";
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (videoUrl.isNotEmpty)
-                  GestureDetector(
-                    onTap: () async {
-                      final url = Uri.parse(videoUrl);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url, mode: LaunchMode.externalApplication);
-                      }
-                    },
-                    child: Image.network(
-                      getYoutubeThumbnail(videoUrl)!,
-                      height: 200,
-                    ),
-                  ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      descrizione,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                // Titolo
+                Text(
+                  titolo,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/quiz');
-                  },
-                  icon: const Icon(Icons.quiz),
-                  label: const Text("Vai al quiz"),
+
+                // Video thumbnail se disponibile
+                if (videoUrl.isNotEmpty) ...[
+                  GestureDetector(
+                    onTap: () async {
+                      try {
+                        final url = Uri.parse(videoUrl);
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Impossibile aprire il video"),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Errore nell'apertura del video: $e"),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: getYoutubeThumbnail(videoUrl) != null
+                            ? Image.network(
+                          getYoutubeThumbnail(videoUrl)!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: Icon(
+                                  Icons.play_circle_outline,
+                                  size: 64,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                            : Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(
+                              Icons.play_circle_outline,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Descrizione
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      descrizione.isNotEmpty
+                          ? descrizione
+                          : "Nessuna descrizione disponibile.",
+                      style: const TextStyle(fontSize: 16, height: 1.5),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Bottone quiz
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/quiz',
+                        arguments: argomentoKey, // Passa la chiave al quiz se necessario
+                      );
+                    },
+                    icon: const Icon(Icons.quiz),
+                    label: const Text("Vai al quiz"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrangeAccent,       // Sfondo arancione
+                      foregroundColor: Colors.white,        // Testo e icona bianchi
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -79,7 +232,7 @@ class TopicsView extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/home');
               break;
             case 1:
               Navigator.pushNamed(context, '/quiz');

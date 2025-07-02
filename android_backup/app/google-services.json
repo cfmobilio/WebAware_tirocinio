@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "497915384237",
+    "firebase_url": "https://webaware-ad5bf-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "webaware-ad5bf",
+    "storage_bucket": "webaware-ad5bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497915384237:android:08774f388b7733a3785124",
+        "android_client_info": {
+          "package_name": "com.example.pro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxvrqZRUZ04RX6MP1whjAdHeEkU-GMwIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497915384237:android:ccaf52d89603715b785124",
+        "android_client_info": {
+          "package_name": "com.example.proA"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxvrqZRUZ04RX6MP1whjAdHeEkU-GMwIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:pro/ui/profile/viemodel/profile_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-// Importa i tuoi ViewModel
+import 'package:pro/ui/profile/viemodel/profile_viewmodel.dart';
+import 'package:pro/ui/simulation/simulation_screen.dart';
+import 'package:pro/ui/simulation/situation_screen.dart';
 
 // Importa tutte le schermate
 import 'package:pro/ui/accessibility/accessibility_screen.dart';
@@ -14,7 +15,6 @@ import 'package:pro/ui/insight/extra_screen.dart';
 import 'package:pro/ui/insight/insight_screen.dart';
 import 'package:pro/ui/profile/profile_screen.dart';
 import 'package:pro/ui/quiz/quiz_screen.dart';
-import 'package:pro/ui/simulation/situation_screen.dart';
 import 'package:pro/ui/support/support_screen.dart';
 import 'ui/splash/splash_screen.dart';
 import 'ui/home/home_screen.dart';
@@ -38,7 +38,7 @@ class WebAwareApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
-        // Aggiungi altri provider qui se necessario
+        // Aggiungi altri provider se necessario
       ],
       child: MaterialApp(
         title: 'WebAware',
@@ -48,48 +48,67 @@ class WebAwareApp extends StatelessWidget {
           switch (settings.name) {
             case '/':
               return MaterialPageRoute(builder: (_) => const SplashScreen());
+
             case '/quizIntro':
               return MaterialPageRoute(builder: (_) => const QuizIntroScreen());
+
             case '/questions':
               return MaterialPageRoute(builder: (_) => const QuestionsScreen());
+
             case '/resultBase':
               return MaterialPageRoute(builder: (_) => const BaseResultScreen());
+
             case '/resultIntermediate':
               return MaterialPageRoute(builder: (_) => const IntermediateResultScreen());
+
             case '/resultAdvanced':
               return MaterialPageRoute(builder: (_) => const AdvancedResultScreen());
+
             case '/extra':
               return MaterialPageRoute(builder: (_) => ExtraPage());
+
             case '/insight':
               return MaterialPageRoute(builder: (_) => const InsightPage());
+
             case '/login':
               return MaterialPageRoute(builder: (_) => LoginScreen());
+
             case '/support':
               return MaterialPageRoute(builder: (_) => const SupportPage());
+
             case '/accessibility':
               return MaterialPageRoute(builder: (_) => const AccessibilityPage());
+
             case '/profile':
               return MaterialPageRoute(builder: (_) => const ProfilePage());
+
             case '/home':
               return MaterialPageRoute(builder: (_) => HomeView());
+
             case '/topics':
-              return MaterialPageRoute(builder: (_) => TopicsView());
+              return MaterialPageRoute(
+                builder: (_) => const TopicsView(),
+                settings: settings,
+              );
+
             case '/quiz':
               return MaterialPageRoute(builder: (_) => QuizPage());
+
             case '/simulation':
-              final argId = settings.arguments;
-              if (argId == null || argId is! String) {
-                return MaterialPageRoute(
-                  builder: (_) => const Scaffold(
-                    body: Center(child: Text("Nessun ID argomento fornito")),
-                  ),
-                );
-              }
               return MaterialPageRoute(
-                builder: (_) => SituationScreen(argomentoId: argId),
+                builder: (_) => SimulationScreen(),
+                settings: settings,
               );
+
+            case '/situation':
+              return MaterialPageRoute(
+                builder: (_) => const SituationScreen(),
+                settings: settings, // ⬅️ Consente di leggere gli arguments
+              );
+
             case '/emergency':
               return MaterialPageRoute(builder: (_) => EmergencyPage());
+
             default:
               return MaterialPageRoute(builder: (_) => const SplashScreen());
           }
