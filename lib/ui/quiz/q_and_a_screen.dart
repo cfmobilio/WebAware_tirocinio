@@ -18,25 +18,37 @@ class QAndAScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
+            // Check if quiz is finished BEFORE trying to access domande[domandaCorrente]
             if (vm.quizFinito()) {
-              return Center(
+              // Esegui navigazione UNA SOLA VOLTA
+              if (!vm.isSaving) {
+                vm.isSaving = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  vm.salvaRisultato((successo, percentuale) {
+                    // Reset isSaving prima di navigare
+                    vm.isSaving = false;
+                    Navigator.pushReplacementNamed(
+                      context,
+                      successo ? "/good" : "/bad",
+                      arguments: percentuale,
+                    );
+                  });
+                });
+              }
+              // Show loading or completion message while saving
+              return const Center(
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Quiz completato!"),
-                    ElevatedButton(
-                      onPressed: () {
-                        vm.salvaRisultato((successo) {
-                          Navigator.pushReplacementNamed(context, successo ? "/good" : "/bad");
-                        });
-                      },
-                      child: const Text("Vedi risultato"),
-                    )
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text("Salvataggio in corso..."),
                   ],
                 ),
               );
             }
 
+            // Now it's safe to access domande[domandaCorrente]
             final domanda = vm.domande[vm.domandaCorrente];
 
             return Padding(
@@ -44,6 +56,16 @@ class QAndAScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Progress indicator
+                  LinearProgressIndicator(
+                    value: (vm.domandaCorrente + 1) / vm.domande.length,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Domanda ${vm.domandaCorrente + 1} di ${vm.domande.length}",
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 20),
                   Text(
                     domanda.testo,
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

@@ -15,6 +15,8 @@ class QuestionViewModel extends ChangeNotifier {
   int? rispostaSelezionata;
   String argomento = '';
 
+  bool isSaving = false;
+
   Future<void> init(String argomentoKey) async {
     argomento = argomentoKey;
     final snapshot = await _db.collection('quiz_$argomento').get();
@@ -37,21 +39,31 @@ class QuestionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool quizFinito() => domandaCorrente >= domande.length;
+  bool quizFinito() {
+    return domandaCorrente >= domande.length;
+  }
 
-  Future<void> salvaRisultato(Function(bool successo) onDone) async {
+  Future<void> salvaRisultato(Function(bool successo, int percentuale) onDone) async {
     final uid = _auth.currentUser?.uid;
-    if (uid == null) return;
+    if (uid == null) {
+      onDone(false, 0);
+      return;
+    }
 
     final percentuale = ((punteggio / domande.length) * 100).toInt();
     final ref = _db.collection("progressi_utente").doc(uid).collection("argomenti").doc(argomento);
 
     try {
       await ref.set({"percentuale": percentuale});
-      if (percentuale >= 80) await _assegnaBadge(uid);
-      onDone(true);
-    } catch (_) {
-      onDone(false);
+      if (percentuale >= 80) {
+        await _assegnaBadge(uid);
+        onDone(true, percentuale);
+      } else {
+        onDone(false, percentuale);
+      }
+    } catch (e) {
+      print("Errore nel salvataggio: $e");
+      onDone(false, percentuale);
     }
   }
 
