@@ -54,16 +54,27 @@ class ExtraViewModel {
     ),
   ];
 
-  final Map<String, String> argomentiMap = {
+  final Map<String, String> argomentiKey = {
     "Privacy online": "privacy",
     "Cyberbullismo": "cyberbullismo",
     "Phishing": "phishing",
     "Dipendenza dai social": "dipendenza",
     "Fake News": "fake",
-    "Sicurezza account": "account",
+    "Sicurezza account": "sicurezza",
     "Truffe online": "truffe",
     "Protezione dati": "dati",
     "Netiquette": "netiquette",
     "Navigazione sicura": "navigazione",
   };
+
+  // Metodo helper per ottenere la chiave in modo sicuro
+  String getKeyForSubject(String titolo) {
+    final key = argomentiKey[titolo];
+    if (key == null) {
+      print('Attenzione: chiave non trovata per "$titolo"');
+      print('Chiavi disponibili: ${argomentiKey.keys.toList()}');
+      return "altro"; // Valore di fallback
+    }
+    return key;
+  }
 }

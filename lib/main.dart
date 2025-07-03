@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pro/ui/quiz/bad_screen.dart';
+import 'package:pro/ui/quiz/good_screen.dart';
+import 'package:pro/ui/quiz/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pro/ui/profile/viemodel/profile_viewmodel.dart';
@@ -38,7 +41,6 @@ class WebAwareApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
-        // Aggiungi altri provider se necessario
       ],
       child: MaterialApp(
         title: 'WebAware',
@@ -94,6 +96,14 @@ class WebAwareApp extends StatelessWidget {
             case '/quiz':
               return MaterialPageRoute(builder: (_) => QuizPage());
 
+            case '/quiz_domande':
+              final arg = settings.arguments as String;
+              return MaterialPageRoute(builder: (_) => QAndAScreen(argomento: arg));
+
+            case '/good':
+              return MaterialPageRoute(builder: (_)=> GoodPage());
+            case '/bad':
+              return MaterialPageRoute(builder: (_)=>BadScreen() );
             case '/simulation':
               return MaterialPageRoute(
                 builder: (_) => SimulationScreen(),

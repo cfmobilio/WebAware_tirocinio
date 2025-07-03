@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BadFragment extends StatelessWidget {
-  const BadFragment({super.key});
+class BadScreen extends StatelessWidget {
+  const BadScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

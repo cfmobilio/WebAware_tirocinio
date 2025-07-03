@@ -10,7 +10,7 @@ class ExtraPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final argomenti = viewModel.argomenti;
-    final mapping = viewModel.argomentiMap;
+    final mapping = viewModel.argomentiKey;
 
     return Scaffold(
       appBar: AppBar(

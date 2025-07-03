@@ -1,9 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../models/insight_model.dart';
 
 class InsightViewModel {
-  static final Map<String, Insight> approfondimenti = {
-    "privacy": Insight(titolo: "Privacy Online", descrizione: "Testo sull’importanza della privacy..."),
-    "phishing": Insight(titolo: "Phishing", descrizione: "Testo per riconoscere email false..."),
-    // ...
-  };
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<Insight?> fetchInsight(String tipo) async {
+    try {
+      final doc = await _firestore.collection('approfondimenti')
+          .doc(tipo)
+          .get();
+      if (doc.exists) {
+        return Insight.fromFirestore(doc.data()!);
+      }
+    } catch (e) {
+      print("Errore nel caricamento di '$tipo': $e");
+    }
+    return null;
+  }
 }

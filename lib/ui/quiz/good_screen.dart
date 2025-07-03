@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class GoodPage extends StatelessWidget {
-  final String quizId;
-
-  const GoodPage({super.key, required this.quizId});
+  const GoodPage({super.key});
 
   @override
   Widget build(BuildContext context) {
