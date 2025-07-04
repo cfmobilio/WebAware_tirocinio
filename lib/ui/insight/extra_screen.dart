@@ -15,10 +15,7 @@ class ExtraPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
-        title: const Text(
-          "WebAware",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("WebAware", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
@@ -32,25 +29,75 @@ class ExtraPage extends StatelessWidget {
       ),
 
       body: ListView.builder(
+        padding: const EdgeInsets.all(12.0),
         itemCount: argomenti.length,
         itemBuilder: (context, index) {
           final App a = argomenti[index];
-          return ListTile(
-            leading: Image.asset(a.icona, width: 40),
-            title: Text(a.titolo),
-            subtitle: Text(a.descrizione),
-            onTap: () {
-              final key = mapping[a.titolo] ?? "altro";
-              Navigator.pushNamed(context, '/insight', arguments: key);
-            },
+          final key = mapping[a.titolo] ?? "altro";
+
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () {
+                print("Navigazione a /insight con chiave: $key");
+                Navigator.pushNamed(context, '/insight', arguments: key);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        a.icona,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            a.titolo,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            a.descrizione,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+              ),
+            ),
           );
         },
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.deepOrange,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
+        currentIndex: 3,
         onTap: (index) {
           switch (index) {
             case 0:
@@ -63,7 +110,6 @@ class ExtraPage extends StatelessWidget {
               Navigator.pushNamed(context, '/simulation');
               break;
             case 3:
-              Navigator.pushNamed(context, '/extra');
               break;
             case 4:
               Navigator.pushNamed(context, '/emergency');
@@ -71,7 +117,7 @@ class ExtraPage extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),

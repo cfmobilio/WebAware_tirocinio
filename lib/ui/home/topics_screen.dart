@@ -17,8 +17,6 @@ class TopicsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // Gestione sicura dell'argomento della route
     final arguments = ModalRoute.of(context)?.settings.arguments;
 
     if (arguments == null) {
@@ -42,7 +40,25 @@ class TopicsView extends StatelessWidget {
     final argomentoKey = arguments;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Argomento")),
+      appBar: AppBar(
+        title: FutureBuilder<DocumentSnapshot>(
+          future: FirebaseFirestore.instance
+              .collection('info_argomenti')
+              .doc(argomentoKey)
+              .get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Caricamento...");
+            }
+            if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+              return const Text("Errore");
+            }
+            final data = snapshot.data!.data() as Map<String, dynamic>?;
+            final titolo = data?['titolo'] as String? ?? "Senza titolo";
+            return Text(titolo);
+          },
+        ),
+      ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
             .collection('info_argomenti')
@@ -71,7 +87,7 @@ class TopicsView extends StatelessWidget {
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            print('Documento non trovato per chiave: $argomentoKey'); // Debug
+            print('Documento non trovato per chiave: $argomentoKey');
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +112,6 @@ class TopicsView extends StatelessWidget {
             );
           }
 
-          final titolo = data['titolo'] as String? ?? "Senza titolo";
           final descrizione = data['descrizione'] as String? ?? "";
           final videoUrl = data['videoUrl'] as String? ?? "";
 
@@ -105,16 +120,6 @@ class TopicsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Titolo
-                Text(
-                  titolo,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Video thumbnail se disponibile
                 if (videoUrl.isNotEmpty) ...[
                   GestureDetector(
                     onTap: () async {
@@ -124,16 +129,12 @@ class TopicsView extends StatelessWidget {
                           await launchUrl(url, mode: LaunchMode.externalApplication);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Impossibile aprire il video"),
-                            ),
+                            const SnackBar(content: Text("Impossibile aprire il video")),
                           );
                         }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Errore nell'apertura del video: $e"),
-                          ),
+                          SnackBar(content: Text("Errore nell'apertura del video: $e")),
                         );
                       }
                     },
@@ -156,27 +157,17 @@ class TopicsView extends StatelessWidget {
                             ? Image.network(
                           getYoutubeThumbnail(videoUrl)!,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[300],
-                              child: const Center(
-                                child: Icon(
-                                  Icons.play_circle_outline,
-                                  size: 64,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            );
-                          },
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: Icon(Icons.play_circle_outline, size: 64, color: Colors.grey),
+                            ),
+                          ),
                         )
                             : Container(
                           color: Colors.grey[300],
                           child: const Center(
-                            child: Icon(
-                              Icons.play_circle_outline,
-                              size: 64,
-                              color: Colors.grey,
-                            ),
+                            child: Icon(Icons.play_circle_outline, size: 64, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -184,22 +175,15 @@ class TopicsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                 ],
-
-                // Descrizione
                 Expanded(
                   child: SingleChildScrollView(
                     child: Text(
-                      descrizione.isNotEmpty
-                          ? descrizione
-                          : "Nessuna descrizione disponibile.",
+                      descrizione.isNotEmpty ? descrizione : "Nessuna descrizione disponibile.",
                       style: const TextStyle(fontSize: 16, height: 1.5),
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
-                // Bottone quiz
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -207,14 +191,14 @@ class TopicsView extends StatelessWidget {
                       Navigator.pushNamed(
                         context,
                         '/quiz',
-                        arguments: argomentoKey, // Passa la chiave al quiz se necessario
+                        arguments: argomentoKey,
                       );
                     },
                     icon: const Icon(Icons.quiz),
                     label: const Text("Vai al quiz"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrangeAccent,       // Sfondo arancione
-                      foregroundColor: Colors.white,        // Testo e icona bianchi
+                      backgroundColor: Colors.deepOrangeAccent,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),

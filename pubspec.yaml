@@ -39,6 +39,8 @@ dependencies:
   shared_preferences: ^2.2.2
   share_plus: ^7.2.2
   flutter_tts: ^4.0.2
+  flutter_rating_bar: ^4.0.0
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -102,6 +104,8 @@ flutter:
     - assets/target.png
     - assets/banned.png
     - assets/private_detective.png
+    - assets/feedback_illustration.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

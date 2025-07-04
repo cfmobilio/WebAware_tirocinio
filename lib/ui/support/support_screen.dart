@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
@@ -48,38 +49,131 @@ class _SupportPageState extends State<SupportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Supporto")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(children: [
-          ElevatedButton.icon(
-            onPressed: _sendEmail,
-            icon: const Icon(Icons.email),
-            label: const Text("Contatta il supporto"),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrange,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'WebAware',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
-          const SizedBox(height: 16),
-          const Text("Lascia un feedback"),
-          Slider(
-            min: 0,
-            max: 5,
-            divisions: 5,
-            value: _rating,
-            label: _rating.round().toString(),
-            onChanged: (value) => setState(() => _rating = value),
-          ),
-          TextField(
-            controller: _feedbackController,
-            decoration: const InputDecoration(
-              labelText: "Scrivi un commento",
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          children: [
+            const SizedBox(height: 24),
+
+            // Illustrazione
+            Image.asset(
+              'assets/feedback_illustration.png',
+              width: 180,
+              height: 180,
             ),
-            maxLines: 4,
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: _sendFeedback,
-            child: const Text("Invia Feedback"),
-          ),
-        ]),
+
+            const SizedBox(height: 24),
+
+            // Titolo
+            const Text(
+              'Hai un problema?',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 12),
+
+            // Pulsante email
+            ElevatedButton(
+              onPressed: _sendEmail,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: const Text(
+                'Contattaci via email',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Divider
+            const Divider(color: Color(0xFFCCCCCC)),
+
+            const SizedBox(height: 24),
+
+            // Sottotitolo
+            const Text(
+              'Ti piace l\'app? Lascia una recensione!',
+              style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Rating bar
+            RatingBar.builder(
+              initialRating: _rating,
+              minRating: 0,
+              maxRating: 5,
+              direction: Axis.horizontal,
+              allowHalfRating: false,
+              itemCount: 5,
+              itemSize: 40,
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                setState(() {
+                  _rating = rating;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // TextField feedback
+            TextField(
+              controller: _feedbackController,
+              maxLines: 6,
+              decoration: const InputDecoration(
+                hintText: 'Scrivi qui il tuo feedback...',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.all(12),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Bottone invio feedback
+            ElevatedButton(
+              onPressed: _sendFeedback,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: const Text(
+                'Invia feedback',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }

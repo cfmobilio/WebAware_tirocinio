@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pro/ui/accessibility/viewmodel/accesibility_viewmodel.dart';
 import 'package:pro/ui/auth/register_screen.dart';
 import 'package:pro/ui/auth/viewmodel/auth_viewmodel.dart';
 import 'package:pro/ui/initialtest/welcome_screen.dart';
@@ -45,6 +46,8 @@ class WebAwareApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => AccessibilityViewModel()),
+
       ],
       child: MaterialApp(
         title: 'WebAware',

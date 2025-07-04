@@ -37,15 +37,8 @@ class HomeView extends StatelessWidget {
           return SubjectCard(
             subject: subject,
             onTap: () {
-              print('=== INIZIO NAVIGAZIONE ===');
-              print('Subject cliccato: ${subject.titolo}');
 
-              // Usa il metodo sicuro per ottenere la chiave
               final key = vm.getKeyForSubject(subject.titolo);
-
-              print('Chiave ottenuta: "$key"');
-              print('Tipo chiave: ${key.runtimeType}');
-              print('Tentativo navigazione a /topics');
 
               try {
                 Navigator.pushNamed(
@@ -53,13 +46,11 @@ class HomeView extends StatelessWidget {
                   '/topics',
                   arguments: key,
                 );
-                print('Navigazione avviata con successo');
               } catch (e) {
                 print('ERRORE NAVIGAZIONE: $e');
               }
 
-              print('=== FINE NAVIGAZIONE ===');
-            },
+              },
           );
         },
       ),

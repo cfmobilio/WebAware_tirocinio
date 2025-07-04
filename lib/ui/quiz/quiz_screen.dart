@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class QuizPage extends StatefulWidget {
@@ -53,39 +52,46 @@ class _QuizPageState extends State<QuizPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
-        title: const Text(
-          "WebAware",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("WebAware", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.person, color: Colors.white),
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile');
-            },
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
           ),
         ],
       ),
-
       body: ListView.builder(
+        padding: const EdgeInsets.all(8.0),
         itemCount: quizList.length,
         itemBuilder: (context, index) {
           final quiz = quizList[index];
           final percentuale = progressi[quiz["key"]] ?? 0;
 
-          return ListTile(
-            leading: Image.asset("assets/${quiz['icona']}", width: 40),
-            title: Text(quiz["titolo"]),
-            subtitle: LinearProgressIndicator(
-              value: percentuale / 100.0,
-              minHeight: 6,
+          return Card(
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+            child: ListTile(
+              leading: Image.asset("assets/${quiz['icona']}", width: 40),
+              title: Text(quiz["titolo"]),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 6),
+                  LinearProgressIndicator(
+                    value: percentuale / 100.0,
+                    minHeight: 6,
+                    color: Colors.deepOrange,
+                    backgroundColor: Colors.grey.shade300,
+                  ),
+                ],
+              ),
+              trailing: Text("$percentuale%"),
+              onTap: () {
+                print("Navigazione a quiz: ${quiz['key']}");
+                Navigator.pushNamed(context, '/quiz_domande', arguments: quiz["key"]);
+              },
             ),
-            trailing: Text("$percentuale%"),
-            onTap: () {
-              Navigator.pushNamed(context, '/quiz_domande', arguments: quiz["key"]);
-            },
           );
         },
       ),
@@ -94,13 +100,14 @@ class _QuizPageState extends State<QuizPage> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
+        currentIndex: 1, // Quiz
         onTap: (index) {
           switch (index) {
             case 0:
               Navigator.pushNamed(context, '/home');
               break;
             case 1:
-              Navigator.pushNamed(context, '/quiz');
+            // Sei già in Quiz
               break;
             case 2:
               Navigator.pushNamed(context, '/simulation');
@@ -114,14 +121,13 @@ class _QuizPageState extends State<QuizPage> {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-
     );
   }
 }

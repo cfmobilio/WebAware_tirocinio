@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pro/ui/simulation/viewmodel/simulation_viewmodel.dart';
 
 class SimulationScreen extends StatelessWidget {
-
   final SimulationViewModel vm = SimulationViewModel();
 
   @override
@@ -26,22 +25,68 @@ class SimulationScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
+        padding: const EdgeInsets.all(8.0),
         itemCount: vm.argomentiList.length,
         itemBuilder: (context, index) {
           final argomento = vm.argomentiList[index];
-          return ListTile(
-            leading: Image.asset(argomento.iconaAssetPath),
-            title: Text(argomento.titolo),
-            subtitle: Text(argomento.sottotitolo),
-            onTap: () {
-              final key = vm.getKeyForSubject(argomento.titolo);
-              Navigator.pushNamed(
-                context,
-                '/situation',
-                arguments: key,
-              );
-            },
+          final key = vm.getKeyForSubject(argomento.titolo);
 
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/situation',
+                  arguments: key,
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        argomento.iconaAssetPath,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            argomento.titolo,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            argomento.sottotitolo,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+              ),
+            ),
           );
         },
       ),
@@ -50,6 +95,7 @@ class SimulationScreen extends StatelessWidget {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
+        currentIndex: 2, // Simulazioni
         onTap: (index) {
           switch (index) {
             case 0:
@@ -59,7 +105,6 @@ class SimulationScreen extends StatelessWidget {
               Navigator.pushNamed(context, '/quiz');
               break;
             case 2:
-              Navigator.pushNamed(context, '/simulation');
               break;
             case 3:
               Navigator.pushNamed(context, '/extra');
@@ -70,14 +115,13 @@ class SimulationScreen extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-
     );
   }
 }

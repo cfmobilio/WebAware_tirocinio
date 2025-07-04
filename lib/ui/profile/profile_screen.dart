@@ -11,15 +11,15 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final Map<String, String> badgeDescriptions = {
-    "lock": "Badge: Privacy Online",
-    "compass": "Badge Navigazione",
-    "target": "Badge Obiettivi",
-    "eyes": "Badge Osservatore",
-    "banned": "Badge Anti-Phishing",
-    "floppy_disk": "Badge Backup",
-    "private_detective": "Badge Investigatore",
-    "key": "Badge: Sicurezza informatica",
-    "earth": "Badge Globale",
+    "lock": "Privacy Online",
+    "compass": "Navigazione",
+    "target": "Obiettivi",
+    "eyes": "Osservatore",
+    "banned": "Anti-Phishing",
+    "floppy_disk": "Backup",
+    "private_detective": "Investigatore",
+    "key": "Sicurezza informatica",
+    "earth": "Globale",
   };
 
   final List<String> badgeKeys = [
@@ -43,79 +43,170 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ProfileViewModel>();
+    final badgeCount = vm.user?.badges.values.where((v) => v).length ?? 0;
+    final badgeTotal = badgeKeys.length;
+    final progress = badgeTotal == 0 ? 0.0 : badgeCount / badgeTotal;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Profilo"),
+        backgroundColor: Colors.deepOrange,
+        title: const Text(
+          "WebAware",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) async {
-              if (value == 'logout') {
-                await vm.logout();
-                if (mounted) {
-                  Navigator.pushReplacementNamed(context, '/login');
-                }
-              } else {
-                Navigator.pushNamed(context, '/$value');
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'support', child: Text("Supporto")),
-              const PopupMenuItem(value: 'accessibility', child: Text("Accessibilità")),
-              const PopupMenuItem(value: 'logout', child: Text("Logout")),
-            ],
-          )
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onPressed: _showOptionsMenu,
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.deepOrange,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.white70,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 0, // sei nella home
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/home');
+            case 1:
+              Navigator.pushNamed(context, '/quiz');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/simulation');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/extra');
+              break;
+            case 4:
+              Navigator.pushNamed(context, '/emergency');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
+          BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
+          BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
+          BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
       body: vm.isLoading
           ? const Center(child: CircularProgressIndicator())
           : vm.user == null
           ? const Center(child: Text("Errore nel caricamento del profilo"))
-          : Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundImage: const AssetImage("assets/fox_logo.png"),
+          : Column(
+        children: [
+          const SizedBox(height: 24),
+          CircleAvatar(
+            radius: 60,
+            backgroundImage: const AssetImage("assets/fox_logo.png"),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            vm.user!.name,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 8),
-            Text(vm.user!.name, style: const TextStyle(fontSize: 20)),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(
-              value: vm.user!.badges.values.where((v) => v).length / badgeKeys.length,
-              minHeight: 10,
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              children: [
+                LinearProgressIndicator(
+                  value: progress,
+                  minHeight: 10,
+                  color: Colors.green,
+                  backgroundColor: Colors.grey[300],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "$badgeCount/$badgeTotal badge sbloccati (${(progress * 100).round()}%)",
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              "${vm.user!.badges.values.where((v) => v).length}/${badgeKeys.length} badge sbloccati",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                children: badgeKeys.map((key) {
-                  final unlocked = vm.user!.badges[key] == true;
-                  return GestureDetector(
-                    onTap: () => _showDescription(context, badgeDescriptions[key] ?? key),
-                    child: Opacity(
-                      opacity: unlocked ? 1.0 : 0.3,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset("assets/$key.png", width: 48, height: 48),
-                          Text(key, style: const TextStyle(fontSize: 12))
-                        ],
-                      ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            "I tuoi badge",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 3,
+              padding: const EdgeInsets.all(8),
+              children: badgeKeys.map((key) {
+                final unlocked = vm.user!.badges[key] == true;
+                return GestureDetector(
+                  onTap: () => _showDescription(context, badgeDescriptions[key] ?? key),
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/$key.png",
+                          width: 64,
+                          height: 64,
+                          color: unlocked ? null : Colors.grey,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          badgeDescriptions[key] ?? key,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: unlocked ? Colors.black : Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                }).toList(),
-              ),
-            )
-          ],
-        ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showOptionsMenu() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.support),
+            title: const Text("Supporto"),
+            onTap: () => Navigator.pushNamed(context, '/support'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.accessibility),
+            title: const Text("Accessibilità"),
+            onTap: () => Navigator.pushNamed(context, '/accessibility'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text("Logout"),
+            onTap: () async {
+              await context.read<ProfileViewModel>().logout();
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, '/login');
+              }
+            },
+          ),
+        ],
       ),
     );
   }
