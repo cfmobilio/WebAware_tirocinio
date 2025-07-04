@@ -92,7 +92,16 @@ flutter:
     - assets/scam.png
     - assets/data-security.png
     - assets/online-safety.png
-
+    - assets/fox_head.png
+    - assets/lock.png
+    - assets/eyes.png
+    - assets/earth.png
+    - assets/key.png
+    - assets/floppy_disk.png
+    - assets/compass.png
+    - assets/target.png
+    - assets/banned.png
+    - assets/private_detective.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -124,4 +133,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
