@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:pro/ui/auth/viewmodel/auth_viewmodel.dart';
 
 class RegisterScreen extends StatelessWidget {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _repeatPasswordController = TextEditingController();
 
   RegisterScreen({super.key});
 
@@ -14,54 +15,179 @@ class RegisterScreen extends StatelessWidget {
     final viewModel = context.watch<AuthViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Registrazione')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nome'),
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                await viewModel.register(
-                  _nameController.text.trim(),
-                  _emailController.text.trim(),
-                  _passwordController.text.trim(),
-                );
-
-                if (viewModel.errorMessage == null && context.mounted) {
-                  Navigator.pushReplacementNamed(context, '/home');
-                }
-              },
-              child: viewModel.isLoading
-                  ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-                  : const Text('Registrati'),
-            ),
-            if (viewModel.errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Text(
-                  viewModel.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header stile LinearLayout
+              Container(
+                height: 75,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                color: Colors.deepOrange,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const Expanded(
+                      child: Text(
+                        'WebAware',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(width: 38), // simmetria
+                  ],
                 ),
               ),
-          ],
+
+              const SizedBox(height: 48),
+
+              // Logo
+              Image.asset(
+                'assets/fox_head.png',
+                width: 159,
+                height: 198,
+              ),
+
+              const SizedBox(height: 32),
+
+              // Nome e Cognome
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Nome e Cognome',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Email
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'E-mail',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Password
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Password',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Ripeti Password
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: TextField(
+                  controller: _repeatPasswordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Ripeti password',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Pulsante Google (semplificato)
+              OutlinedButton.icon(
+                onPressed: () {
+                  // TODO: Integrazione Google Sign-In
+                },
+                icon: const Icon(Icons.account_circle),
+                label: const Text('Registrati con Google'),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Pulsante Registrati
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // Controllo password uguali
+                      if (_passwordController.text != _repeatPasswordController.text) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Le password non coincidono'),
+                            backgroundColor: Colors.deepOrange,
+                          ),
+                        );
+                        return;
+                      }
+
+                      await viewModel.register(
+                        _nameController.text.trim(),
+                        _emailController.text.trim(),
+                        _passwordController.text.trim(),
+                      );
+
+                      if (viewModel.errorMessage == null && context.mounted) {
+                        Navigator.pushReplacementNamed(context, '/home');
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrange,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: viewModel.isLoading
+                        ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                        : const Text('Registrati'),
+                  ),
+                ),
+              ),
+
+              if (viewModel.errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    viewModel.errorMessage!,
+                    style: const TextStyle(color: Colors.deepOrange),
+                  ),
+                ),
+
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
