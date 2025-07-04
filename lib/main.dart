@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pro/ui/auth/register_screen.dart';
+import 'package:pro/ui/auth/viewmodel/auth_viewmodel.dart';
+import 'package:pro/ui/initialtest/welcome_screen.dart';
 import 'package:pro/ui/quiz/bad_screen.dart';
 import 'package:pro/ui/quiz/good_screen.dart';
 import 'package:pro/ui/quiz/q_and_a_screen.dart';
@@ -41,6 +44,7 @@ class WebAwareApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
       ],
       child: MaterialApp(
         title: 'WebAware',
@@ -66,6 +70,8 @@ class WebAwareApp extends StatelessWidget {
             case '/resultAdvanced':
               return MaterialPageRoute(builder: (_) => const AdvancedResultScreen());
 
+            case '/welcome':
+              return MaterialPageRoute(builder: (_)=> const WelcomeScreen());
             case '/extra':
               return MaterialPageRoute(builder: (_) => ExtraPage());
 
@@ -74,6 +80,9 @@ class WebAwareApp extends StatelessWidget {
 
             case '/login':
               return MaterialPageRoute(builder: (_) => LoginScreen());
+
+            case '/register':
+              return MaterialPageRoute(builder: (_)=> RegisterScreen());
 
             case '/support':
               return MaterialPageRoute(builder: (_) => const SupportPage());
@@ -113,7 +122,7 @@ class WebAwareApp extends StatelessWidget {
             case '/situation':
               return MaterialPageRoute(
                 builder: (_) => const SituationScreen(),
-                settings: settings, // ⬅️ Consente di leggere gli arguments
+                settings: settings,
               );
 
             case '/emergency':

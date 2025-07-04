@@ -7,11 +7,20 @@ class AdvancedResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
-          child: const Text('Continua'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Hai raggiunto il livello Avanzato!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => Navigator.pushReplacementNamed(context, '/welcome'),
+              child: const Text('Continua'),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+

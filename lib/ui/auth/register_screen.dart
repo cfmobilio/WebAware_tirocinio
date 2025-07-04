@@ -7,6 +7,8 @@ class RegisterScreen extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  RegisterScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<AuthViewModel>();
@@ -32,15 +34,23 @@ class RegisterScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                viewModel.register(
-                  _nameController.text,
-                  _emailController.text,
-                  _passwordController.text,
+              onPressed: () async {
+                await viewModel.register(
+                  _nameController.text.trim(),
+                  _emailController.text.trim(),
+                  _passwordController.text.trim(),
                 );
+
+                if (viewModel.errorMessage == null && context.mounted) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                }
               },
               child: viewModel.isLoading
-                  ? const CircularProgressIndicator()
+                  ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
                   : const Text('Registrati'),
             ),
             if (viewModel.errorMessage != null)

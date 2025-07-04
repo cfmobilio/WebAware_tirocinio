@@ -18,15 +18,13 @@ class QAndAScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
-            // Check if quiz is finished BEFORE trying to access domande[domandaCorrente]
             if (vm.quizFinito()) {
-              // Esegui navigazione UNA SOLA VOLTA
               if (!vm.isSaving) {
                 vm.isSaving = true;
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   vm.salvaRisultato((successo, percentuale) {
-                    // Reset isSaving prima di navigare
                     vm.isSaving = false;
+                    print("[DEBUG] Risultato finale: $percentuale% → ${successo ? 'GOOD' : 'BAD'}");
                     Navigator.pushReplacementNamed(
                       context,
                       successo ? "/good" : "/bad",
@@ -35,7 +33,6 @@ class QAndAScreen extends StatelessWidget {
                   });
                 });
               }
-              // Show loading or completion message while saving
               return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +45,6 @@ class QAndAScreen extends StatelessWidget {
               );
             }
 
-            // Now it's safe to access domande[domandaCorrente]
             final domanda = vm.domande[vm.domandaCorrente];
 
             return Padding(
@@ -56,7 +52,6 @@ class QAndAScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Progress indicator
                   LinearProgressIndicator(
                     value: (vm.domandaCorrente + 1) / vm.domande.length,
                   ),

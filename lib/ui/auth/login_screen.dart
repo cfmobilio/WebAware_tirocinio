@@ -32,6 +32,10 @@ class LoginScreen extends StatelessWidget {
                   _emailController.text,
                   _passwordController.text,
                 );
+
+                if (viewModel.errorMessage == null && context.mounted) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                }
               },
               child: viewModel.isLoading
                   ? const CircularProgressIndicator()

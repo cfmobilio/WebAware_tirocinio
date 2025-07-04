@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pro">
 <application
-        android:label="pro"
-        android:icon="@mipmap/ic_launcher">
+        android:label="WebAware"
+        android:icon="@mipmap/fox_head">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -8,7 +8,7 @@ class IntermediateResultScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/welcome'),
           child: const Text('Continua'),
         ),
       ),

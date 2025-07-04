@@ -34,28 +34,33 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> register(String name, String email, String password) async {
+  Future<bool> register(String name, String email, String password) async {
     _setLoading(true);
+    _errorMessage = null;
     try {
-      final cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final cred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      // Inizializza con una mappa vuota di badge o con badge di default
       final initialBadges = <String, bool>{
         'primo_accesso': true,
-        // Aggiungi altri badge di default se necessario
       };
 
       _user = UserModel(
-          id: cred.user!.uid,
-          name: name,
-          email: email,
-          badges: initialBadges
+        id: cred.user!.uid,
+        name: name,
+        email: email,
+        badges: initialBadges,
       );
 
       await _db.collection("users").doc(_user!.id).set(_user!.toMap());
       notifyListeners();
+      return true;
     } catch (e) {
       _errorMessage = e.toString();
+      notifyListeners();
+      return false;
     } finally {
       _setLoading(false);
     }
