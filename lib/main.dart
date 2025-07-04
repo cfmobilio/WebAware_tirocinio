@@ -47,93 +47,100 @@ class WebAwareApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => AccessibilityViewModel()),
-
       ],
-      child: MaterialApp(
-        title: 'WebAware',
-        debugShowCheckedModeBanner: false,
-        initialRoute: '/',
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/':
-              return MaterialPageRoute(builder: (_) => const SplashScreen());
+      child: Consumer<AccessibilityViewModel>(
+        builder: (context, accessibilityViewModel, child) {
+          return MaterialApp(
+            title: 'WebAware',
+            debugShowCheckedModeBanner: false,
+            theme: accessibilityViewModel.getTheme(), // Applica il tema dinamicamente
+            initialRoute: '/',
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case '/':
+                  return MaterialPageRoute(builder: (_) => const SplashScreen());
 
-            case '/quizIntro':
-              return MaterialPageRoute(builder: (_) => const QuizIntroScreen());
+                case '/quizIntro':
+                  return MaterialPageRoute(builder: (_) => const QuizIntroScreen());
 
-            case '/questions':
-              return MaterialPageRoute(builder: (_) => const QuestionsScreen());
+                case '/questions':
+                  return MaterialPageRoute(builder: (_) => const QuestionsScreen());
 
-            case '/resultBase':
-              return MaterialPageRoute(builder: (_) => const BaseResultScreen());
+                case '/resultBase':
+                  return MaterialPageRoute(builder: (_) => const BaseResultScreen());
 
-            case '/resultIntermediate':
-              return MaterialPageRoute(builder: (_) => const IntermediateResultScreen());
+                case '/resultIntermediate':
+                  return MaterialPageRoute(builder: (_) => const IntermediateResultScreen());
 
-            case '/resultAdvanced':
-              return MaterialPageRoute(builder: (_) => const AdvancedResultScreen());
+                case '/resultAdvanced':
+                  return MaterialPageRoute(builder: (_) => const AdvancedResultScreen());
 
-            case '/welcome':
-              return MaterialPageRoute(builder: (_)=> const WelcomeScreen());
-            case '/extra':
-              return MaterialPageRoute(builder: (_) => ExtraPage());
+                case '/welcome':
+                  return MaterialPageRoute(builder: (_) => const WelcomeScreen());
 
-            case '/insight':
-              return MaterialPageRoute(builder: (_) => const InsightPage());
+                case '/extra':
+                  return MaterialPageRoute(builder: (_) => ExtraPage());
 
-            case '/login':
-              return MaterialPageRoute(builder: (_) => LoginScreen());
+                case '/insight':
+                  return MaterialPageRoute(builder: (_) => const InsightPage());
 
-            case '/register':
-              return MaterialPageRoute(builder: (_)=> RegisterScreen());
+                case '/login':
+                  return MaterialPageRoute(builder: (_) => LoginScreen());
 
-            case '/support':
-              return MaterialPageRoute(builder: (_) => const SupportPage());
+                case '/register':
+                  return MaterialPageRoute(builder: (_) => RegisterScreen());
 
-            case '/accessibility':
-              return MaterialPageRoute(builder: (_) => const AccessibilityPage());
+                case '/support':
+                  return MaterialPageRoute(builder: (_) => const SupportPage());
 
-            case '/profile':
-              return MaterialPageRoute(builder: (_) => const ProfilePage());
+                case '/accessibility':
+                  return MaterialPageRoute(builder: (_) => const AccessibilityPage());
 
-            case '/home':
-              return MaterialPageRoute(builder: (_) => HomeView());
+                case '/profile':
+                  return MaterialPageRoute(builder: (_) => const ProfilePage());
 
-            case '/topics':
-              return MaterialPageRoute(
-                builder: (_) => const TopicsView(),
-                settings: settings,
-              );
+                case '/home':
+                  return MaterialPageRoute(builder: (_) => HomeView());
 
-            case '/quiz':
-              return MaterialPageRoute(builder: (_) => QuizPage());
+                case '/topics':
+                  return MaterialPageRoute(
+                    builder: (_) => const TopicsView(),
+                    settings: settings,
+                  );
 
-            case '/quiz_domande':
-              final arg = settings.arguments as String;
-              return MaterialPageRoute(builder: (_) => QAndAScreen(argomento: arg));
+                case '/quiz':
+                  return MaterialPageRoute(builder: (_) => QuizPage());
 
-            case '/good':
-              return MaterialPageRoute(builder: (_)=> GoodPage());
-            case '/bad':
-              return MaterialPageRoute(builder: (_)=>BadScreen() );
-            case '/simulation':
-              return MaterialPageRoute(
-                builder: (_) => SimulationScreen(),
-                settings: settings,
-              );
+                case '/quiz_domande':
+                  final arg = settings.arguments as String;
+                  return MaterialPageRoute(builder: (_) => QAndAScreen(argomento: arg));
 
-            case '/situation':
-              return MaterialPageRoute(
-                builder: (_) => const SituationScreen(),
-                settings: settings,
-              );
+                case '/good':
+                  return MaterialPageRoute(builder: (_) => GoodPage());
 
-            case '/emergency':
-              return MaterialPageRoute(builder: (_) => EmergencyPage());
+                case '/bad':
+                  return MaterialPageRoute(builder: (_) => BadScreen());
 
-            default:
-              return MaterialPageRoute(builder: (_) => const SplashScreen());
-          }
+                case '/simulation':
+                  return MaterialPageRoute(
+                    builder: (_) => SimulationScreen(),
+                    settings: settings,
+                  );
+
+                case '/situation':
+                  return MaterialPageRoute(
+                    builder: (_) => const SituationScreen(),
+                    settings: settings,
+                  );
+
+                case '/emergency':
+                  return MaterialPageRoute(builder: (_) => EmergencyPage());
+
+                default:
+                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+              }
+            },
+          );
         },
       ),
     );
