@@ -35,7 +35,7 @@ import 'ui/initialtest/result/advanced_result_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // Crea il ViewModel e carica le impostazioni
+
   final accessibilityViewModel = AccessibilityViewModel();
   await accessibilityViewModel.loadSettings();
 
