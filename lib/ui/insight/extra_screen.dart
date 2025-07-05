@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pro/ui/insight/viewmodel/extra_viewmodel.dart';
 import '../../../models/app_model.dart';
+import '../accessibility/tts/tts_page_wrapper.dart';
 
 class ExtraPage extends StatelessWidget {
   final ExtraViewModel viewModel = ExtraViewModel();
@@ -11,8 +12,15 @@ class ExtraPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final argomenti = viewModel.argomenti;
     final mapping = viewModel.argomentiKey;
+    return TtsPageWrapper(
+        pageTitle: "Sezione Extra",
+        pageDescription: "Sei ancora curioso? Questa è la sezione giusta!",
+        autoReadTexts: [
+        "Scegli una categoria per iniziare",
+        "Ogni sezione contiene degli approfondimenti sugli argomenti trattati",
+        ],
 
-    return Scaffold(
+        child: Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: const Text("WebAware", style: TextStyle(color: Colors.white)),
@@ -44,7 +52,6 @@ class ExtraPage extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
               onTap: () {
-                print("Navigazione a /insight con chiave: $key");
                 Navigator.pushNamed(context, '/insight', arguments: key);
               },
               child: Padding(
@@ -117,13 +124,13 @@ class ExtraPage extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-    );
+    ));
   }
 }

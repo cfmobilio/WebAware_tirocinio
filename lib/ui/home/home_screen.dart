@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pro/ui/home/view_model/home_viewmodel.dart';
 import 'package:pro/ui/home/widget/subject_card.dart';
 import '../../models/subject_model.dart';
+import '../accessibility/tts/tts_page_wrapper.dart';
 
 class HomeView extends StatelessWidget {
   final HomeViewModel vm = HomeViewModel();
@@ -10,8 +11,15 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return TtsPageWrapper(
+        pageTitle: "Sezione informativa",
+        pageDescription: "Scopri nuove informazioni e impara!",
+        autoReadTexts: [
+        "Scegli una categoria per iniziare",
+        "Ogni sezione contiene una piccola spiegazione e un video per imparare",
+        ],
 
-    return Scaffold(
+        child: Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: const Text(
@@ -83,13 +91,13 @@ class HomeView extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-    );
+    ));
   }
 }

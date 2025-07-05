@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../accessibility/tts/tts_page_wrapper.dart';
+
 class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
 
@@ -48,133 +50,142 @@ class _SupportPageState extends State<SupportPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'WebAware',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+    return TtsPageWrapper(
+        pageTitle: "Sezione Supporto",
+        pageDescription: "Ci sono dei problemi? Contattaci!",
+        autoReadTexts: [
+        "In questa sezione puoi contattarci in caso di problemi",
+        "Se ti piace l'app puoi lasciarci una recensione",
+        "o se hai piacere inviarci un feedback",
+        ],
+
+        child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.deepOrange,
+          automaticallyImplyLeading: false,
+          title: const Text(
+            'WebAware',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
+
+              // Illustrazione
+              Image.asset(
+                'assets/feedback_illustration.png',
+                width: 180,
+                height: 180,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Titolo
+              const Text(
+                'Hai un problema?',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 12),
+
+              // Pulsante email
+              ElevatedButton(
+                onPressed: _sendEmail,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: const Text(
+                  'Contattaci via email',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Divider
+              const Divider(color: Color(0xFFCCCCCC)),
+
+              const SizedBox(height: 24),
+
+              // Sottotitolo
+              const Text(
+                'Ti piace l\'app? Lascia una recensione!',
+                style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Rating bar
+              RatingBar.builder(
+                initialRating: _rating,
+                minRating: 0,
+                maxRating: 5,
+                direction: Axis.horizontal,
+                allowHalfRating: false,
+                itemCount: 5,
+                itemSize: 40,
+                itemBuilder: (context, _) => const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+                onRatingUpdate: (rating) {
+                  setState(() {
+                    _rating = rating;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // TextField feedback
+              TextField(
+                controller: _feedbackController,
+                maxLines: 6,
+                decoration: const InputDecoration(
+                  hintText: 'Scrivi qui il tuo feedback...',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.all(12),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Bottone invio feedback
+              ElevatedButton(
+                onPressed: _sendFeedback,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: const Text(
+                  'Invia feedback',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          children: [
-            const SizedBox(height: 24),
-
-            // Illustrazione
-            Image.asset(
-              'assets/feedback_illustration.png',
-              width: 180,
-              height: 180,
-            ),
-
-            const SizedBox(height: 24),
-
-            // Titolo
-            const Text(
-              'Hai un problema?',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 12),
-
-            // Pulsante email
-            ElevatedButton(
-              onPressed: _sendEmail,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: const Text(
-                'Contattaci via email',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Divider
-            const Divider(color: Color(0xFFCCCCCC)),
-
-            const SizedBox(height: 24),
-
-            // Sottotitolo
-            const Text(
-              'Ti piace l\'app? Lascia una recensione!',
-              style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 16),
-
-            // Rating bar
-            RatingBar.builder(
-              initialRating: _rating,
-              minRating: 0,
-              maxRating: 5,
-              direction: Axis.horizontal,
-              allowHalfRating: false,
-              itemCount: 5,
-              itemSize: 40,
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
-                setState(() {
-                  _rating = rating;
-                });
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            // TextField feedback
-            TextField(
-              controller: _feedbackController,
-              maxLines: 6,
-              decoration: const InputDecoration(
-                hintText: 'Scrivi qui il tuo feedback...',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Bottone invio feedback
-            ElevatedButton(
-              onPressed: _sendFeedback,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: const Text(
-                'Invia feedback',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
-    );
+      ));
+    }
   }
-}

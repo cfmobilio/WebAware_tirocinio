@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../accessibility/tts/tts_page_wrapper.dart';
 import 'splash_viewmodel.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -31,8 +32,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
+    return TtsPageWrapper(
+        pageTitle: "Splash View",
+        pageDescription: "Benvenuto in WebAware",
+        autoReadTexts: [
+        "Quanto ne sai del mondo di internet?",
+        "Scopriamolo!",
+        ],
+
+        child: Scaffold(
+        body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -45,6 +54,6 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

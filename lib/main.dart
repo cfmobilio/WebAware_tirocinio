@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pro/ui/accessibility/tts/tts_page_wrapper.dart';
+import 'package:pro/ui/accessibility/tts/tts_service.dart';
 import 'package:pro/ui/accessibility/viewmodel/accesibility_viewmodel.dart';
 import 'package:pro/ui/auth/register_screen.dart';
 import 'package:pro/ui/auth/viewmodel/auth_viewmodel.dart';
@@ -47,6 +49,8 @@ class WebAwareApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => AccessibilityViewModel()),
+        ChangeNotifierProvider(create: (_) => TtsService()..initialize()),
+
       ],
       child: Consumer<AccessibilityViewModel>(
         builder: (context, accessibilityViewModel, child) {
@@ -54,6 +58,17 @@ class WebAwareApp extends StatelessWidget {
             title: 'WebAware',
             debugShowCheckedModeBanner: false,
             theme: accessibilityViewModel.getTheme(), // Applica il tema dinamicamente
+
+            builder: (context, child) {
+              // Se il TTS è abilitato, wrappa automaticamente ogni pagina
+              if (accessibilityViewModel.isTtsEnabled) {
+                return TtsPageWrapper(
+                  child: child ?? Container(),
+                );
+              }
+              return child ?? Container();
+            },
+
             initialRoute: '/',
             onGenerateRoute: (settings) {
               switch (settings.name) {
@@ -146,3 +161,4 @@ class WebAwareApp extends StatelessWidget {
     );
   }
 }
+

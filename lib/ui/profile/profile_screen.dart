@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pro/ui/profile/viemodel/profile_viewmodel.dart';
 import 'package:provider/provider.dart';
 
+import '../accessibility/tts/tts_page_wrapper.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -47,8 +49,17 @@ class _ProfilePageState extends State<ProfilePage> {
     final badgeTotal = badgeKeys.length;
     final progress = badgeTotal == 0 ? 0.0 : badgeCount / badgeTotal;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return TtsPageWrapper(
+        pageTitle: "Sezione Profilo personale",
+        pageDescription: "Quanti badge hai ottenuto? Scoprilo subito",
+        autoReadTexts: [
+        "In questa schermata troverai tutti i tuoi badge",
+        "Il tuo progresso in percentuale",
+        "Le sezioni relative al supporto, accessibilità ed il logout",
+        ],
+
+        child: Scaffold(
+        backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: const Text(
@@ -89,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
@@ -177,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   void _showOptionsMenu() {

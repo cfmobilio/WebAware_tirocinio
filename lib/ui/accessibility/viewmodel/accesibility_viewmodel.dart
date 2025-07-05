@@ -4,14 +4,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AccessibilityViewModel extends ChangeNotifier {
   bool _isHighContrast = false;
   bool _isLargeText = false;
+  bool _isTtsEnabled = false;
+  bool _isAutoReadEnabled = false;
 
   bool get isHighContrast => _isHighContrast;
   bool get isLargeText => _isLargeText;
+  bool get isTtsEnabled => _isTtsEnabled;
+  bool get isAutoReadEnabled => _isAutoReadEnabled;
 
   Future<void> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     _isHighContrast = prefs.getBool('accessibility_mode') ?? false;
     _isLargeText = prefs.getBool('large_text') ?? false;
+    _isTtsEnabled = prefs.getBool('tts_enabled') ?? false;
+    _isAutoReadEnabled = prefs.getBool('auto_read_enabled') ?? false;
     notifyListeners();
   }
 
@@ -26,6 +32,20 @@ class AccessibilityViewModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _isLargeText = enabled;
     await prefs.setBool('large_text', enabled);
+    notifyListeners();
+  }
+
+  Future<void> toggleTts(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    _isTtsEnabled = enabled;
+    await prefs.setBool('tts_enabled', enabled);
+    notifyListeners();
+  }
+
+  Future<void> toggleAutoRead(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    _isAutoReadEnabled = enabled;
+    await prefs.setBool('auto_read_enabled', enabled);
     notifyListeners();
   }
 
@@ -189,7 +209,7 @@ class AccessibilityViewModel extends ChangeNotifier {
         ),
       ),
 
-      // Tema per tutte le Card - FIXED: CardTheme → CardThemeData
+      // Tema per tutte le Card
       cardTheme: CardThemeData(
         color: cardColor,
         elevation: _isHighContrast ? 8 : 2,
@@ -259,7 +279,7 @@ class AccessibilityViewModel extends ChangeNotifier {
       // Colore di sfondo per tutti gli Scaffold
       scaffoldBackgroundColor: backgroundColor,
 
-      // Tema per tutti i Dialog - FIXED: DialogTheme → DialogThemeData
+      // Tema per tutti i Dialog
       dialogTheme: DialogThemeData(
         backgroundColor: surfaceColor,
         titleTextStyle: TextStyle(

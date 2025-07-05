@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:pro/ui/simulation/viewmodel/simulation_viewmodel.dart';
 
+import '../accessibility/tts/tts_page_wrapper.dart';
+
 class SimulationScreen extends StatelessWidget {
   final SimulationViewModel vm = SimulationViewModel();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return TtsPageWrapper(
+        pageTitle: "Sezione Simulazioni",
+        pageDescription: "Testa le tue conoscenze reali sulla sicurezza informatica",
+        autoReadTexts: [
+        "Scegli una categoria per iniziare",
+        "Ogni simulazione presenta un caso reale con due scelte",
+        "Solo una è quella corretta, mi raccomando scegli bene!",
+        ],
+
+        child: Scaffold(      appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: const Text(
           "WebAware",
@@ -115,13 +125,13 @@ class SimulationScreen extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-    );
+    ));
   }
 }

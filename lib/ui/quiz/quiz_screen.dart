@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../accessibility/tts/tts_page_wrapper.dart';
+
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
 
@@ -49,7 +51,16 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return TtsPageWrapper(
+      pageTitle: "Sezione Quiz",
+      pageDescription: "Testa le tue conoscenze sulla sicurezza informatica",
+      autoReadTexts: [
+        "Scegli una categoria per iniziare",
+        "Ogni quiz contiene domande a risposta multipla",
+        "Al termine riceverai un punteggio e feedback dettagliato",
+      ],
+
+        child: Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: const Text("WebAware", style: TextStyle(color: Colors.white)),
@@ -121,13 +132,14 @@ class _QuizPageState extends State<QuizPage> {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
           BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
+    )
     );
   }
 }

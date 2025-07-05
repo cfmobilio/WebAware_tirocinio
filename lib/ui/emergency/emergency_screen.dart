@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pro/ui/emergency/viewmodel/emergency_viewmodel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../accessibility/tts/tts_page_wrapper.dart';
+
 class EmergencyPage extends StatelessWidget {
   final EmergencyViewModel viewModel = EmergencyViewModel();
 
@@ -26,8 +28,16 @@ class EmergencyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final emergenze = viewModel.emergenze;
 
-    return Scaffold(
-      appBar: AppBar(
+    return TtsPageWrapper(
+        pageTitle: "Sezione Contatti",
+        pageDescription: "Hai un'emergenza? Questa sezione fa per te!",
+        autoReadTexts: [
+        "In questa sezione troverai una serie di contatti utili in caso di emergenza",
+        "Per ogni contatto è presente il sito web e il numero di telefono",
+        ],
+
+        child: Scaffold(
+        appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: const Text(
           "WebAware",
@@ -104,6 +114,6 @@ class EmergencyPage extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
         ],
       ),
-    );
+    ));
   }
 }
