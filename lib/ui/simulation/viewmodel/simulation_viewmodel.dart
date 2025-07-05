@@ -32,26 +32,19 @@ class SimulationViewModel extends ChangeNotifier {
     "Navigazione sicura": "2BJYJOwJyjkkgSupWVCf"
   };
 
-  // Metodo helper per ottenere la chiave in modo sicuro
   String getKeyForSubject(String titolo) {
     final key = argomentiKey[titolo];
     if (key == null) {
-      print('Attenzione: chiave non trovata per "$titolo"');
-      print('Chiavi disponibili: ${argomentiKey.keys.toList()}');
-      return "altro"; // Valore di fallback
+      return "altro";
     }
     return key;
   }
 
-  // Metodo per debug - stampa tutte le coppie titolo-chiave
   void debugPrintMappings() {
-    print('=== MAPPINGS DEBUG ===');
     for (int i = 0; i < argomentiList.length; i++) {
       final subject = argomentiList[i];
       final key = getKeyForSubject(subject.titolo);
-      print('${i + 1}. "${subject.titolo}" -> "$key"');
     }
-    print('=====================');
   }
 
   Simulazione? simulazione;
@@ -73,7 +66,6 @@ class SimulationViewModel extends ChangeNotifier {
         simulazione = null;
       }
     } catch (e) {
-      print("Errore durante il caricamento della simulazione: $e");
       simulazione = null;
     }
 

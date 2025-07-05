@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pro/ui/accessibility/viewmodel/accesibility_viewmodel.dart';
+import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
 import 'package:pro/ui/accessibility/tts/tts_page_wrapper.dart';
 
 /// Wrapper principale dell'app che applica automaticamente il TTS a tutte le pagine

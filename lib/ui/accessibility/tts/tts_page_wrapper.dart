@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pro/ui/accessibility/tts/tts_service.dart';
-import 'package:pro/ui/accessibility/viewmodel/accesibility_viewmodel.dart';
+import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
 
 /// Widget che wrappa altre pagine per fornire funzionalità TTS automatiche
 class TtsPageWrapper extends StatefulWidget {

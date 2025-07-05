@@ -6,47 +6,124 @@ class AccessibilityViewModel extends ChangeNotifier {
   bool _isLargeText = false;
   bool _isTtsEnabled = false;
   bool _isAutoReadEnabled = false;
+  bool _isLoading = false;
 
   bool get isHighContrast => _isHighContrast;
   bool get isLargeText => _isLargeText;
   bool get isTtsEnabled => _isTtsEnabled;
   bool get isAutoReadEnabled => _isAutoReadEnabled;
+  bool get isLoading => _isLoading;
 
   Future<void> loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    _isHighContrast = prefs.getBool('accessibility_mode') ?? false;
-    _isLargeText = prefs.getBool('large_text') ?? false;
-    _isTtsEnabled = prefs.getBool('tts_enabled') ?? false;
-    _isAutoReadEnabled = prefs.getBool('auto_read_enabled') ?? false;
-    notifyListeners();
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+      _isHighContrast = prefs.getBool('accessibility_mode') ?? false;
+      _isLargeText = prefs.getBool('large_text') ?? false;
+      _isTtsEnabled = prefs.getBool('tts_enabled') ?? false;
+      _isAutoReadEnabled = prefs.getBool('auto_read_enabled') ?? false;
+
+      // Debug log
+      print('Impostazioni caricate:');
+      print('  Alto contrasto: $_isHighContrast');
+      print('  Testo ingrandito: $_isLargeText');
+      print('  TTS abilitato: $_isTtsEnabled');
+      print('  Auto-lettura: $_isAutoReadEnabled');
+    } catch (e) {
+      print('Errore nel caricamento delle impostazioni: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> toggleHighContrast(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    _isHighContrast = enabled;
-    await prefs.setBool('accessibility_mode', enabled);
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isHighContrast = enabled;
+      await prefs.setBool('accessibility_mode', enabled);
+      notifyListeners();
+      print('Alto contrasto ${enabled ? 'attivato' : 'disattivato'}');
+    } catch (e) {
+      print('Errore nel salvare alto contrasto: $e');
+    }
   }
 
   Future<void> toggleLargeText(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    _isLargeText = enabled;
-    await prefs.setBool('large_text', enabled);
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isLargeText = enabled;
+      await prefs.setBool('large_text', enabled);
+      notifyListeners();
+      print('Testo ingrandito ${enabled ? 'attivato' : 'disattivato'}');
+    } catch (e) {
+      print('Errore nel salvare testo ingrandito: $e');
+    }
   }
 
   Future<void> toggleTts(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    _isTtsEnabled = enabled;
-    await prefs.setBool('tts_enabled', enabled);
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isTtsEnabled = enabled;
+      await prefs.setBool('tts_enabled', enabled);
+
+      // Se disabilito TTS, disabilito anche auto-lettura
+      if (!enabled && _isAutoReadEnabled) {
+        _isAutoReadEnabled = false;
+        await prefs.setBool('auto_read_enabled', false);
+      }
+
+      notifyListeners();
+      print('TTS ${enabled ? 'attivato' : 'disattivato'}');
+    } catch (e) {
+      print('Errore nel salvare TTS: $e');
+    }
   }
 
   Future<void> toggleAutoRead(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    _isAutoReadEnabled = enabled;
-    await prefs.setBool('auto_read_enabled', enabled);
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isAutoReadEnabled = enabled;
+      await prefs.setBool('auto_read_enabled', enabled);
+      notifyListeners();
+      print('Auto-lettura ${enabled ? 'attivata' : 'disattivata'}');
+    } catch (e) {
+      print('Errore nel salvare auto-lettura: $e');
+    }
+  }
+
+  // Funzione per resettare tutte le impostazioni
+  Future<void> resetAllSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      _isHighContrast = false;
+      _isLargeText = false;
+      _isTtsEnabled = false;
+      _isAutoReadEnabled = false;
+
+      await prefs.setBool('accessibility_mode', false);
+      await prefs.setBool('large_text', false);
+      await prefs.setBool('tts_enabled', false);
+      await prefs.setBool('auto_read_enabled', false);
+
+      notifyListeners();
+      print('Tutte le impostazioni sono state resettate');
+    } catch (e) {
+      print('Errore nel reset delle impostazioni: $e');
+    }
+  }
+
+  // Funzione per ottenere un riassunto delle impostazioni
+  Map<String, bool> getSettingsSummary() {
+    return {
+      'Alto Contrasto': _isHighContrast,
+      'Testo Ingrandito': _isLargeText,
+      'TTS Abilitato': _isTtsEnabled,
+      'Auto-lettura': _isAutoReadEnabled,
+    };
   }
 
   /// TEMA COMPLETO CHE SI APPLICA AUTOMATICAMENTE A TUTTA L'APP

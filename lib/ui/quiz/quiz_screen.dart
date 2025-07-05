@@ -99,7 +99,6 @@ class _QuizPageState extends State<QuizPage> {
               ),
               trailing: Text("$percentuale%"),
               onTap: () {
-                print("Navigazione a quiz: ${quiz['key']}");
                 Navigator.pushNamed(context, '/quiz_domande', arguments: quiz["key"]);
               },
             ),

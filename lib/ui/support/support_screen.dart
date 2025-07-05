@@ -83,7 +83,6 @@ class _SupportPageState extends State<SupportPage> {
             children: [
               const SizedBox(height: 24),
 
-              // Illustrazione
               Image.asset(
                 'assets/feedback_illustration.png',
                 width: 180,
@@ -92,7 +91,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 24),
 
-              // Titolo
               const Text(
                 'Hai un problema?',
                 style: TextStyle(
@@ -105,7 +103,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 12),
 
-              // Pulsante email
               ElevatedButton(
                 onPressed: _sendEmail,
                 style: ElevatedButton.styleFrom(
@@ -125,7 +122,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 24),
 
-              // Sottotitolo
               const Text(
                 'Ti piace l\'app? Lascia una recensione!',
                 style: TextStyle(fontSize: 16, color: Color(0xFF666666)),
@@ -134,7 +130,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 16),
 
-              // Rating bar
               RatingBar.builder(
                 initialRating: _rating,
                 minRating: 0,
@@ -156,7 +151,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 16),
 
-              // TextField feedback
               TextField(
                 controller: _feedbackController,
                 maxLines: 6,
@@ -169,7 +163,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 24),
 
-              // Bottone invio feedback
               ElevatedButton(
                 onPressed: _sendFeedback,
                 style: ElevatedButton.styleFrom(

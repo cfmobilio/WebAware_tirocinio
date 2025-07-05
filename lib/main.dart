@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:pro/ui/accessibility/tts/tts_page_wrapper.dart';
 import 'package:pro/ui/accessibility/tts/tts_service.dart';
-import 'package:pro/ui/accessibility/viewmodel/accesibility_viewmodel.dart';
+import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
 import 'package:pro/ui/auth/register_screen.dart';
 import 'package:pro/ui/auth/viewmodel/auth_viewmodel.dart';
 import 'package:pro/ui/initialtest/welcome_screen.dart';
@@ -11,11 +11,10 @@ import 'package:pro/ui/quiz/good_screen.dart';
 import 'package:pro/ui/quiz/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pro/ui/profile/viemodel/profile_viewmodel.dart';
+import 'package:pro/ui/profile/viewmodel/profile_viewmodel.dart';
 import 'package:pro/ui/simulation/simulation_screen.dart';
 import 'package:pro/ui/simulation/situation_screen.dart';
 
-// Importa tutte le schermate
 import 'package:pro/ui/accessibility/accessibility_screen.dart';
 import 'package:pro/ui/auth/login_screen.dart';
 import 'package:pro/ui/emergency/emergency_screen.dart';
@@ -36,7 +35,16 @@ import 'ui/initialtest/result/advanced_result_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const WebAwareApp());
+  // Crea il ViewModel e carica le impostazioni
+  final accessibilityViewModel = AccessibilityViewModel();
+  await accessibilityViewModel.loadSettings();
+
+  runApp(
+      ChangeNotifierProvider.value(
+        value: accessibilityViewModel,
+        child: WebAwareApp(),
+      ),
+  );
 }
 
 class WebAwareApp extends StatelessWidget {

@@ -57,8 +57,6 @@ class _SituationScreenState extends State<SituationScreen> {
         final data = snapshot.data!.data()! as Map<String, dynamic>;
         final titolo = data['titolo'] ?? "Senza titolo";
         final descrizione = data['descrizione'] ?? "";
-        final scelta = List<String>.from(data['scelta'] ?? []);
-        final rispostaCorretta = data['rispostaCorretta'] ?? 0;
         final feedbackPositivo = data['feedbackPositivo'] ?? "Corretto!";
         final feedbackNegativo = data['feedbackNegativo'] ?? "Risposta sbagliata.";
 
@@ -79,7 +77,6 @@ class _SituationScreenState extends State<SituationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Titolo domanda allineato a fianco back button
                 Text(
                   titolo,
                   style: const TextStyle(
@@ -90,7 +87,6 @@ class _SituationScreenState extends State<SituationScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Card domanda colorata arancio
                 Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -115,7 +111,6 @@ class _SituationScreenState extends State<SituationScreen> {
 
                 const Spacer(),
 
-                // Pulsanti "Sbagliato" e "Corretto" affiancati
                 Row(
                   children: [
                     Expanded(

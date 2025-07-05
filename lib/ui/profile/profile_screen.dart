@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pro/ui/profile/viemodel/profile_viewmodel.dart';
+import 'package:pro/ui/profile/viewmodel/profile_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../accessibility/tts/tts_page_wrapper.dart';

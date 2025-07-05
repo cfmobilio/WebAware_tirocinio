@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro/ui/accessibility/tts/tts_service.dart';
-import 'package:pro/ui/accessibility/viewmodel/accesibility_viewmodel.dart';
+import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class AccessibilityPage extends StatefulWidget {

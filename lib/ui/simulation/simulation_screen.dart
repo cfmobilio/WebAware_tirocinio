@@ -6,6 +6,8 @@ import '../accessibility/tts/tts_page_wrapper.dart';
 class SimulationScreen extends StatelessWidget {
   final SimulationViewModel vm = SimulationViewModel();
 
+  SimulationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return TtsPageWrapper(

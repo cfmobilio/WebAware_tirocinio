@@ -15,7 +15,6 @@ class HomeViewModel {
     Subject(titolo: 'Navigazione sicura', iconaAsset: 'assets/online-safety.png')
   ];
 
-  // Mappa corretta con le chiavi che corrispondono ai documenti Firebase
   final Map<String, String> argomentiKey = {
     "Privacy online": "privacy",
     "Cyberbullismo": "cyberbullismo",
@@ -29,13 +28,10 @@ class HomeViewModel {
     "Navigazione sicura": "navigazione"
   };
 
-  // Metodo helper per ottenere la chiave in modo sicuro
   String getKeyForSubject(String titolo) {
     final key = argomentiKey[titolo];
     if (key == null) {
-      print('Attenzione: chiave non trovata per "$titolo"');
-      print('Chiavi disponibili: ${argomentiKey.keys.toList()}');
-      return "altro"; // Valore di fallback
+      return "altro";
     }
     return key;
   }

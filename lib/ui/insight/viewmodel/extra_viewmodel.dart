@@ -67,13 +67,10 @@ class ExtraViewModel {
     "Navigazione sicura": "navigazione",
   };
 
-  // Metodo helper per ottenere la chiave in modo sicuro
   String getKeyForSubject(String titolo) {
     final key = argomentiKey[titolo];
     if (key == null) {
-      print('Attenzione: chiave non trovata per "$titolo"');
-      print('Chiavi disponibili: ${argomentiKey.keys.toList()}');
-      return "altro"; // Valore di fallback
+      return "altro";
     }
     return key;
   }

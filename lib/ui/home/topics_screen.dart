@@ -87,7 +87,6 @@ class TopicsView extends StatelessWidget {
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            print('Documento non trovato per chiave: $argomentoKey');
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

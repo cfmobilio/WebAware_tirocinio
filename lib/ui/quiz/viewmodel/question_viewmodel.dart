@@ -20,7 +20,6 @@ class QuestionViewModel extends ChangeNotifier {
     argomento = argomentoKey;
     final snapshot = await _db.collection('quiz_$argomento').get();
     domande = snapshot.docs.map((doc) => Domanda.fromFirestore(doc.data())).toList();
-    print("[DEBUG] Caricate ${domande.length} domande per l'argomento '$argomento'");
     caricamento = false;
     notifyListeners();
   }
@@ -32,7 +31,6 @@ class QuestionViewModel extends ChangeNotifier {
 
   void confermaRisposta() {
     final corretta = domande[domandaCorrente].rispostaCorretta;
-    print("[DEBUG] Domanda ${domandaCorrente + 1}: scelta=$rispostaSelezionata, corretta=$corretta");
 
     if (rispostaSelezionata == corretta) {
       punteggio++;
@@ -49,28 +47,21 @@ class QuestionViewModel extends ChangeNotifier {
 
   Future<void> salvaRisultato(Function(bool successo, int percentuale) onDone) async {
     final uid = _auth.currentUser?.uid ?? "test_user";
-    if (uid == "test_user") {
-      print("[WARNING] Utente non autenticato, uso ID fittizio per test.");
-    }
 
 
     final percentuale = ((punteggio / domande.length) * 100).toInt();
-    print("[DEBUG] Punteggio totale: $punteggio/${domande.length} → $percentuale%");
 
     final ref = _db.collection("progressi_utente").doc(uid).collection("argomenti").doc(argomento);
 
     try {
       await ref.set({"percentuale": percentuale});
       if (percentuale >= 80) {
-        print("[DEBUG] Percentuale >=80%, assegno badge.");
         await _assegnaBadge(uid);
         onDone(true, percentuale);
       } else {
-        print("[DEBUG] Percentuale <80%, nessun badge.");
         onDone(false, percentuale);
       }
     } catch (e) {
-      print("[ERROR] Errore nel salvataggio: $e");
       onDone(false, percentuale);
     }
   }
@@ -92,9 +83,6 @@ class QuestionViewModel extends ChangeNotifier {
     final badgeKey = badgeMap[argomento];
     if (badgeKey != null) {
       await _db.collection("users").doc(uid).update({"badges.$badgeKey": true});
-      print("[DEBUG] Badge '$badgeKey' assegnato.");
-    } else {
-      print("[DEBUG] Nessun badge corrispondente trovato per '$argomento'");
     }
   }
 }
