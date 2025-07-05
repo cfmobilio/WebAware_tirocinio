@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pro/services/firebase_notification_service.dart';
 import 'package:pro/ui/accessibility/tts/tts_page_wrapper.dart';
 import 'package:pro/ui/accessibility/tts/tts_service.dart';
 import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
@@ -32,9 +34,17 @@ import 'ui/initialtest/result/base_result_screen.dart';
 import 'ui/initialtest/result/intermediate_result_screen.dart';
 import 'ui/initialtest/result/advanced_result_screen.dart';
 
+@pragma('vm:entry-point')
+Future<void> _handleBackgroundMessage(RemoteMessage message) async {
+  print('Messaggio ricevuto in background: ${message.notification?.title}');
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseNotificationService().initialize();
+
+  FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
 
   final accessibilityViewModel = AccessibilityViewModel();
   await accessibilityViewModel.loadSettings();

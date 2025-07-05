@@ -21,20 +21,13 @@ class FirebaseNotificationService {
 
   /// Inizializza il servizio notifiche
   Future<void> initialize() async {
-    // Richiedi permessi
+    print('Inizializzo FirebaseNotificationService');
     await _requestPermissions();
-
-    // Configura notifiche locali
     await _configureLocalNotifications();
-
-    // Configura Firebase Messaging
     await _configureFirebaseMessaging();
-
-    // Carica notifiche salvate
     await _loadSavedNotifications();
-
-    // Programma notifiche periodiche
     _schedulePeriodicNotifications();
+    print('FirebaseNotificationService inizializzato');
   }
 
   /// Richiedi permessi per le notifiche
@@ -82,7 +75,6 @@ class FirebaseNotificationService {
 
   /// Configura Firebase Messaging
   Future<void> _configureFirebaseMessaging() async {
-    // Ottieni token FCM
     String? token = await _firebaseMessaging.getToken();
     print('FCM Token: $token');
 
