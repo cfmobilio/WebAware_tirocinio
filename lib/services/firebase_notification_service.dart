@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import '../models/notification_model.dart';
 
 class FirebaseNotificationService {
@@ -21,13 +22,20 @@ class FirebaseNotificationService {
 
   /// Inizializza il servizio notifiche
   Future<void> initialize() async {
-    print('Inizializzo FirebaseNotificationService');
+    // Richiedi permessi
     await _requestPermissions();
+
+    // Configura notifiche locali
     await _configureLocalNotifications();
+
+    // Configura Firebase Messaging
     await _configureFirebaseMessaging();
+
+    // Carica notifiche salvate
     await _loadSavedNotifications();
+
+    // Programma notifiche periodiche
     _schedulePeriodicNotifications();
-    print('FirebaseNotificationService inizializzato');
   }
 
   /// Richiedi permessi per le notifiche
@@ -75,6 +83,7 @@ class FirebaseNotificationService {
 
   /// Configura Firebase Messaging
   Future<void> _configureFirebaseMessaging() async {
+    // Ottieni token FCM
     String? token = await _firebaseMessaging.getToken();
     print('FCM Token: $token');
 
@@ -244,11 +253,10 @@ class FirebaseNotificationService {
 
   /// Programma notifiche periodiche di sicurezza
   void _schedulePeriodicNotifications() {
-    // Simula notifiche di sicurezza ogni 30 secondi per testing
     Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 30));
-      _sendTestSecurityNotification();
-      return true;
+        await Future.delayed(const Duration(hours: 2));
+        _sendTestSecurityNotification();
+        return true;
     });
   }
 
