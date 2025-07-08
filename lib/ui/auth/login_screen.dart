@@ -109,8 +109,10 @@ class LoginScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    viewModel.login(
+                  onPressed: viewModel.isLoading
+                      ? null
+                      : () async {
+                    await viewModel.login(
                       _emailController.text,
                       _passwordController.text,
                     );
@@ -132,14 +134,43 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
 
-            // Google Sign-In Button (semplificato)
+            // Google Sign-In Button (implementato)
             const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Implementa Google Sign-In
-              },
-              icon: const Icon(Icons.login),
-              label: const Text('Accedi con Google'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton.icon(
+                  onPressed: viewModel.isLoading
+                      ? null
+                      : () async {
+                    await viewModel.signInWithGoogle();
+
+                    if (viewModel.errorMessage == null && context.mounted) {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    }
+                  },
+                  icon: viewModel.isLoading
+                      ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                      : Image.asset(
+                    'assets/google_logo.png', // Aggiungi il logo Google se ce l'hai
+                    width: 20,
+                    height: 20,
+                  ),
+                  label: const Text(
+                    'Accedi con Google',
+                    style: TextStyle(color: Colors.deepOrange),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.deepOrange),
+                  ),
+                ),
+              ),
             ),
 
             if (viewModel.errorMessage != null)

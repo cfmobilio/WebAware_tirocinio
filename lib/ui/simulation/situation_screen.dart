@@ -121,7 +121,12 @@ class _SituationScreenState extends State<SituationScreen> {
                         ),
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(feedbackNegativo)),
+                            SnackBar(
+                              content: Text(feedbackNegativo),
+                              duration: const Duration(seconds: 10),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                            ),
                           );
                         },
                         child: const Text("Sbagliato", style: TextStyle(color: Colors.white)),
@@ -136,7 +141,12 @@ class _SituationScreenState extends State<SituationScreen> {
                         ),
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(feedbackPositivo)),
+                            SnackBar(
+                              content: Text(feedbackPositivo),
+                              duration: const Duration(seconds: 10),
+                              backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                            ),
                           );
                         },
                         child: const Text("Corretto", style: TextStyle(color: Colors.white)),
