@@ -143,12 +143,10 @@ class _NotificationCenterScreenState extends State<NotificationCenterScreen>
   }
 
   void _handleNotificationTap(NotificationModel notification, NotificationProvider provider) {
-    // Segna come letta se non lo è già
     if (!notification.isRead) {
       provider.markAsRead(notification.id);
     }
 
-    // Mostra dettagli notifica
     _showNotificationDetails(notification);
   }
 

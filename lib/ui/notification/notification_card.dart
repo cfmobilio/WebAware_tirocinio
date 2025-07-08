@@ -8,12 +8,12 @@ class NotificationCard extends StatelessWidget {
   final VoidCallback? onDelete;
 
   const NotificationCard({
-    Key? key,
+    super.key,
     required this.notification,
     this.onTap,
     this.onMarkAsRead,
     this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

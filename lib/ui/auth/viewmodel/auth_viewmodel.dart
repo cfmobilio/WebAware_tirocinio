@@ -24,6 +24,7 @@ class AuthViewModel with ChangeNotifier {
 
   Future<void> login(String email, String password) async {
     _setLoading(true);
+    _errorMessage = null;
     try {
       final cred = await _auth.signInWithEmailAndPassword(email: email, password: password);
       await _fetchUserData(cred.user!.uid);
@@ -68,6 +69,7 @@ class AuthViewModel with ChangeNotifier {
 
   Future<void> resetPassword(String email) async {
     _setLoading(true);
+    _errorMessage = null;
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
@@ -79,9 +81,13 @@ class AuthViewModel with ChangeNotifier {
 
   Future<void> signInWithGoogle() async {
     _setLoading(true);
+    _errorMessage = null;
     try {
       final googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return; // Annullato
+      if (googleUser == null) {
+        _setLoading(false);
+        return; // Annullato
+      }
 
       final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
