@@ -68,15 +68,15 @@ class QuestionViewModel extends ChangeNotifier {
 
   Future<void> _assegnaBadge(String uid) async {
     final badgeMap = {
-      "privacy": "key",
-      "cyberbullismo": "warning",
+      "privacy": "lock",
+      "cyberbullismo": "banned",
       "phishing": "target",
-      "dipendenza": "hourglass",
+      "dipendenza": "eyes",
       "fake": "fact_check",
-      "sicurezza": "shield",
-      "truffe": "scam",
+      "sicurezza": "key",
+      "truffe": "private_detective",
       "dati": "floppy_disk",
-      "netiquette": "forum",
+      "netiquette": "earth",
       "navigazione": "compass",
     };
 

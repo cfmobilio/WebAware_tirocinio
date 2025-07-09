@@ -7,94 +7,126 @@ class AccessibilityViewModel extends ChangeNotifier {
   bool _isTtsEnabled = false;
   bool _isAutoReadEnabled = false;
   bool _isLoading = false;
+  bool _isInitialized = false;
+
+  // Chiavi costanti per SharedPreferences
+  static const String _keyHighContrast = 'accessibility_high_contrast';
+  static const String _keyLargeText = 'accessibility_large_text';
+  static const String _keyTtsEnabled = 'accessibility_tts_enabled';
+  static const String _keyAutoRead = 'accessibility_auto_read';
 
   bool get isHighContrast => _isHighContrast;
   bool get isLargeText => _isLargeText;
   bool get isTtsEnabled => _isTtsEnabled;
   bool get isAutoReadEnabled => _isAutoReadEnabled;
   bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
 
+  /// Carica le impostazioni salvate
   Future<void> loadSettings() async {
+    if (_isInitialized) return; // Evita caricamenti multipli
+
     try {
       _isLoading = true;
       notifyListeners();
 
       final prefs = await SharedPreferences.getInstance();
-      _isHighContrast = prefs.getBool('accessibility_mode') ?? false;
-      _isLargeText = prefs.getBool('large_text') ?? false;
-      _isTtsEnabled = prefs.getBool('tts_enabled') ?? false;
-      _isAutoReadEnabled = prefs.getBool('auto_read_enabled') ?? false;
 
-      // Debug log
-      print('Impostazioni caricate:');
-      print('  Alto contrasto: $_isHighContrast');
-      print('  Testo ingrandito: $_isLargeText');
-      print('  TTS abilitato: $_isTtsEnabled');
-      print('  Auto-lettura: $_isAutoReadEnabled');
+      _isHighContrast = prefs.getBool(_keyHighContrast) ?? false;
+      _isLargeText = prefs.getBool(_keyLargeText) ?? false;
+      _isTtsEnabled = prefs.getBool(_keyTtsEnabled) ?? false;
+      _isAutoReadEnabled = prefs.getBool(_keyAutoRead) ?? false;
+
+      _isInitialized = true;
+
     } catch (e) {
-      print('Errore nel caricamento delle impostazioni: $e');
+      return;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> toggleHighContrast(bool enabled) async {
+  Future<void> _saveSetting(String key, bool value) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      _isHighContrast = enabled;
-      await prefs.setBool('accessibility_mode', enabled);
-      notifyListeners();
-      print('Alto contrasto ${enabled ? 'attivato' : 'disattivato'}');
+      await prefs.setBool(key, value);
     } catch (e) {
-      print('Errore nel salvare alto contrasto: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> toggleHighContrast(bool enabled) async {
+    if (_isHighContrast == enabled) return;
+
+    _isHighContrast = enabled;
+    notifyListeners();
+
+    try {
+      await _saveSetting(_keyHighContrast, enabled);
+    } catch (e) {
+      _isHighContrast = !enabled;
+      notifyListeners();
     }
   }
 
   Future<void> toggleLargeText(bool enabled) async {
+    if (_isLargeText == enabled) return;
+
+    _isLargeText = enabled;
+    notifyListeners();
+
     try {
-      final prefs = await SharedPreferences.getInstance();
-      _isLargeText = enabled;
-      await prefs.setBool('large_text', enabled);
-      notifyListeners();
-      print('Testo ingrandito ${enabled ? 'attivato' : 'disattivato'}');
+      await _saveSetting(_keyLargeText, enabled);
     } catch (e) {
-      print('Errore nel salvare testo ingrandito: $e');
+      _isLargeText = !enabled;
+      notifyListeners();
     }
   }
 
   Future<void> toggleTts(bool enabled) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      _isTtsEnabled = enabled;
-      await prefs.setBool('tts_enabled', enabled);
+    if (_isTtsEnabled == enabled) return;
 
-      // Se disabilito TTS, disabilito anche auto-lettura
+    _isTtsEnabled = enabled;
+
+    if (!enabled && _isAutoReadEnabled) {
+      _isAutoReadEnabled = false;
+    }
+
+    notifyListeners();
+
+    try {
+      await _saveSetting(_keyTtsEnabled, enabled);
+
       if (!enabled && _isAutoReadEnabled) {
-        _isAutoReadEnabled = false;
-        await prefs.setBool('auto_read_enabled', false);
+        await _saveSetting(_keyAutoRead, false);
       }
 
-      notifyListeners();
-      print('TTS ${enabled ? 'attivato' : 'disattivato'}');
     } catch (e) {
-      print('Errore nel salvare TTS: $e');
+      _isTtsEnabled = !enabled;
+      notifyListeners();
     }
   }
 
   Future<void> toggleAutoRead(bool enabled) async {
+    if (_isAutoReadEnabled == enabled) return;
+
+    if (enabled && !_isTtsEnabled) {
+      return;
+    }
+
+    _isAutoReadEnabled = enabled;
+    notifyListeners();
+
     try {
-      final prefs = await SharedPreferences.getInstance();
-      _isAutoReadEnabled = enabled;
-      await prefs.setBool('auto_read_enabled', enabled);
-      notifyListeners();
-      print('Auto-lettura ${enabled ? 'attivata' : 'disattivata'}');
+      await _saveSetting(_keyAutoRead, enabled);
     } catch (e) {
-      print('Errore nel salvare auto-lettura: $e');
+      // Rollback in caso di errore
+      _isAutoReadEnabled = !enabled;
+      notifyListeners();
     }
   }
 
-  // Funzione per resettare tutte le impostazioni
   Future<void> resetAllSettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -104,19 +136,17 @@ class AccessibilityViewModel extends ChangeNotifier {
       _isTtsEnabled = false;
       _isAutoReadEnabled = false;
 
-      await prefs.setBool('accessibility_mode', false);
-      await prefs.setBool('large_text', false);
-      await prefs.setBool('tts_enabled', false);
-      await prefs.setBool('auto_read_enabled', false);
+      await prefs.setBool(_keyHighContrast, false);
+      await prefs.setBool(_keyLargeText, false);
+      await prefs.setBool(_keyTtsEnabled, false);
+      await prefs.setBool(_keyAutoRead, false);
 
       notifyListeners();
-      print('Tutte le impostazioni sono state resettate');
     } catch (e) {
-      print('Errore nel reset delle impostazioni: $e');
+      return;
     }
   }
 
-  // Funzione per ottenere un riassunto delle impostazioni
   Map<String, bool> getSettingsSummary() {
     return {
       'Alto Contrasto': _isHighContrast,
@@ -126,36 +156,41 @@ class AccessibilityViewModel extends ChangeNotifier {
     };
   }
 
-  /// TEMA COMPLETO CHE SI APPLICA AUTOMATICAMENTE A TUTTA L'APP
+  Future<bool> isPreferencesAvailable() async {
+    try {
+      await SharedPreferences.getInstance();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   ThemeData getTheme() {
-    // Colori base
     final primaryColor = _isHighContrast ? Colors.yellow : Colors.deepOrange;
     final backgroundColor = _isHighContrast ? Colors.black : Colors.white;
     final textColor = _isHighContrast ? Colors.white : Colors.black;
     final cardColor = _isHighContrast ? Colors.grey[900]! : Colors.grey[100]!;
     final surfaceColor = _isHighContrast ? Colors.grey[800]! : Colors.white;
 
-    // Moltiplicatore per le dimensioni del testo
-    final textScaleFactor = _isLargeText ? 1.25 : 1.0;
+    final textScaleFactor = _isLargeText ? 1.3 : 1.0;
 
     return ThemeData(
-      // Tema di base
       brightness: _isHighContrast ? Brightness.dark : Brightness.light,
 
-      // Schema colori che viene applicato OVUNQUE automaticamente
       colorScheme: ColorScheme(
         brightness: _isHighContrast ? Brightness.dark : Brightness.light,
         primary: primaryColor,
         onPrimary: _isHighContrast ? Colors.black : Colors.white,
         secondary: primaryColor,
         onSecondary: _isHighContrast ? Colors.black : Colors.white,
-        error: Colors.red,
+        error: _isHighContrast ? Colors.red[400]! : Colors.red,
         onError: Colors.white,
         surface: surfaceColor,
         onSurface: textColor,
+        background: backgroundColor,
+        onBackground: textColor,
       ),
 
-      // Tema per tutti i testi dell'app
       textTheme: TextTheme(
         displayLarge: TextStyle(
           fontSize: 32 * textScaleFactor,
@@ -231,24 +266,22 @@ class AccessibilityViewModel extends ChangeNotifier {
         ),
       ),
 
-      // Tema AppBar - si applica a TUTTE le AppBar automaticamente
       appBarTheme: AppBarTheme(
         backgroundColor: _isHighContrast ? Colors.black : Colors.deepOrange,
-        foregroundColor: _isHighContrast ? Colors.white : Colors.black,
+        foregroundColor: _isHighContrast ? Colors.white : Colors.white,
         titleTextStyle: TextStyle(
-          fontSize: 24 * textScaleFactor,
+          fontSize: 20 * textScaleFactor,
           fontWeight: FontWeight.bold,
-          color: _isHighContrast ? Colors.white : Colors.black,
+          color: _isHighContrast ? Colors.white : Colors.white,
         ),
         iconTheme: IconThemeData(
-          color: _isHighContrast ? Colors.white : Colors.black,
+          color: _isHighContrast ? Colors.white : Colors.white,
           size: 24 * textScaleFactor,
         ),
         elevation: 2,
         centerTitle: true,
       ),
 
-      // Tema per tutti i pulsanti ElevatedButton
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
@@ -258,7 +291,7 @@ class AccessibilityViewModel extends ChangeNotifier {
             fontWeight: FontWeight.bold,
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: 16 * textScaleFactor,
+            horizontal: 20 * textScaleFactor,
             vertical: 12 * textScaleFactor,
           ),
           shape: RoundedRectangleBorder(
@@ -267,7 +300,6 @@ class AccessibilityViewModel extends ChangeNotifier {
         ),
       ),
 
-      // Tema per tutti i pulsanti OutlinedButton
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: primaryColor,
@@ -277,7 +309,7 @@ class AccessibilityViewModel extends ChangeNotifier {
             fontWeight: FontWeight.bold,
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: 16 * textScaleFactor,
+            horizontal: 20 * textScaleFactor,
             vertical: 12 * textScaleFactor,
           ),
           shape: RoundedRectangleBorder(
@@ -286,20 +318,18 @@ class AccessibilityViewModel extends ChangeNotifier {
         ),
       ),
 
-      // Tema per tutte le Card
       cardTheme: CardThemeData(
         color: cardColor,
         elevation: _isHighContrast ? 8 : 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           side: _isHighContrast
-              ? const BorderSide(color: Colors.yellow, width: 2)
+              ? BorderSide(color: Colors.yellow, width: 2)
               : BorderSide.none,
         ),
         margin: const EdgeInsets.all(8),
       ),
 
-      // Tema per tutti i ListTile
       listTileTheme: ListTileThemeData(
         textColor: textColor,
         iconColor: primaryColor,
@@ -313,15 +343,27 @@ class AccessibilityViewModel extends ChangeNotifier {
           fontSize: 14 * textScaleFactor,
           color: textColor.withOpacity(0.7),
         ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16 * textScaleFactor,
+          vertical: 8 * textScaleFactor,
+        ),
       ),
 
-      // Tema per tutti gli Switch
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.all(primaryColor),
-        trackColor: WidgetStateProperty.all(primaryColor.withOpacity(0.3)),
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _isHighContrast ? Colors.black : Colors.white;
+          }
+          return Colors.grey;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return primaryColor;
+          }
+          return Colors.grey.withOpacity(0.5);
+        }),
       ),
 
-      // Tema per tutti i TextField
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: _isHighContrast ? Colors.grey[800] : Colors.grey[100],
@@ -345,18 +387,19 @@ class AccessibilityViewModel extends ChangeNotifier {
           color: textColor.withOpacity(0.6),
           fontSize: 14 * textScaleFactor,
         ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 12 * textScaleFactor,
+          vertical: 16 * textScaleFactor,
+        ),
       ),
 
-      // Tema per tutte le icone
       iconTheme: IconThemeData(
         color: primaryColor,
         size: 24 * textScaleFactor,
       ),
 
-      // Colore di sfondo per tutti gli Scaffold
       scaffoldBackgroundColor: backgroundColor,
 
-      // Tema per tutti i Dialog
       dialogTheme: DialogThemeData(
         backgroundColor: surfaceColor,
         titleTextStyle: TextStyle(
@@ -369,7 +412,7 @@ class AccessibilityViewModel extends ChangeNotifier {
           color: textColor,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
         ),
       ),
 
@@ -386,6 +429,7 @@ class AccessibilityViewModel extends ChangeNotifier {
         backgroundColor: surfaceColor,
       ),
 
+      // Tema per tutti i TabBar
       tabBarTheme: TabBarThemeData(
         labelColor: primaryColor,
         unselectedLabelColor: textColor.withOpacity(0.7),
@@ -397,6 +441,35 @@ class AccessibilityViewModel extends ChangeNotifier {
           fontSize: 14 * textScaleFactor,
           fontWeight: FontWeight.normal,
         ),
+      ),
+
+      // Tema per tutti i FloatingActionButton
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: primaryColor,
+        foregroundColor: _isHighContrast ? Colors.black : Colors.white,
+      ),
+
+      // Tema per tutte le CheckBox
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return primaryColor;
+          }
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(
+          _isHighContrast ? Colors.black : Colors.white,
+        ),
+      ),
+
+      // Tema per tutti i RadioButton
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return primaryColor;
+          }
+          return textColor.withOpacity(0.6);
+        }),
       ),
     );
   }

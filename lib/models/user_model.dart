@@ -11,7 +11,6 @@ class UserModel {
     required this.badges
   });
 
-  // Factory constructor per creare UserModel da Firestore
   factory UserModel.fromFirestore(Map<String, dynamic> data) {
     return UserModel(
       id: data['id'] ?? '',
@@ -21,17 +20,15 @@ class UserModel {
     );
   }
 
-  // Factory constructor esistente (corretto)
   factory UserModel.fromMap(String id, Map<String, dynamic> map) {
     return UserModel(
       id: id,
       name: map['name'] ?? '',
       email: map['email'] ?? '',
-      badges: Map<String, bool>.from(map['badges'] ?? {}), // Corretto: era 'data' invece di 'map'
+      badges: Map<String, bool>.from(map['badges'] ?? {}),
     );
   }
 
-  // Metodo per convertire in Map (aggiornato per includere badges)
   Map<String, dynamic> toMap() {
     return {
       'id': id,

@@ -14,26 +14,29 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final Map<String, String> badgeDescriptions = {
     "lock": "Privacy Online",
-    "compass": "Navigazione",
-    "target": "Obiettivi",
-    "eyes": "Osservatore",
-    "banned": "Anti-Phishing",
-    "floppy_disk": "Backup",
-    "private_detective": "Investigatore",
+    "banned": "Cyberbullismo",
+    "target": "Phishing",
+    "eyes": "Dipendenza dai social",
+    "fact_check": "Fake news",
     "key": "Sicurezza informatica",
-    "earth": "Globale",
+    "private_detective":"Truffe online",
+    "floppy_disk": "Protezione dei dati",
+    "earth": "Netiquette badge",
+    "compass": "Navigazione sicura",
+
   };
 
   final List<String> badgeKeys = [
     "lock",
-    "compass",
+    "banned",
     "target",
     "eyes",
-    "banned",
-    "floppy_disk",
-    "private_detective",
+    "fact_check",
     "key",
-    "earth"
+    "private_detective",
+    "floppy_disk",
+    "earth",
+    "compass",
   ];
 
   @override

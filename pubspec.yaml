@@ -109,6 +109,14 @@ flutter:
     - assets/banned.png
     - assets/private_detective.png
     - assets/feedback_illustration.png
+    - assets/party_popper.png
+    - assets/decision_making.png
+    - assets/advanced_level.png
+    - assets/base_level.png
+    - assets/intermediate_level.png
+    - assets/share.png
+    - assets/fact_check.png
+
 
 
   # To add assets to your application, add an assets section, like this:

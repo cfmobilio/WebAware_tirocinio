@@ -46,15 +46,7 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
 
-  final accessibilityViewModel = AccessibilityViewModel();
-  await accessibilityViewModel.loadSettings();
-
-  runApp(
-      ChangeNotifierProvider.value(
-        value: accessibilityViewModel,
-        child: WebAwareApp(),
-      ),
-  );
+  runApp(const WebAwareApp());
 }
 
 class WebAwareApp extends StatelessWidget {
@@ -66,19 +58,18 @@ class WebAwareApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => AccessibilityViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => AccessibilityViewModel()..loadSettings(),
+        ),
         ChangeNotifierProvider(create: (_) => TtsService()..initialize()),
-
       ],
       child: Consumer<AccessibilityViewModel>(
         builder: (context, accessibilityViewModel, child) {
           return MaterialApp(
             title: 'WebAware',
             debugShowCheckedModeBanner: false,
-            theme: accessibilityViewModel.getTheme(), // Applica il tema dinamicamente
-
+            theme: accessibilityViewModel.getTheme(),
             builder: (context, child) {
-              // Se il TTS è abilitato, wrappa automaticamente ogni pagina
               if (accessibilityViewModel.isTtsEnabled) {
                 return TtsPageWrapper(
                   child: child ?? Container(),
@@ -86,7 +77,6 @@ class WebAwareApp extends StatelessWidget {
               }
               return child ?? Container();
             },
-
             initialRoute: '/',
             onGenerateRoute: (settings) {
               switch (settings.name) {
@@ -179,4 +169,3 @@ class WebAwareApp extends StatelessWidget {
     );
   }
 }
-

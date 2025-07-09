@@ -134,7 +134,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
 
-            // Google Sign-In Button (implementato)
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -158,7 +157,7 @@ class LoginScreen extends StatelessWidget {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                       : Image.asset(
-                    'assets/google_logo.png', // Aggiungi il logo Google se ce l'hai
+                    'assets/google_logo.png',
                     width: 20,
                     height: 20,
                   ),

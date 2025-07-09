@@ -93,11 +93,8 @@ class _SituationScreenState extends State<SituationScreen> {
                   ),
                   elevation: 8,
                   color: const Color(0xFFFD904C),
-                  child: Container(
-                    width: double.infinity,
+                  child: Padding(
                     padding: const EdgeInsets.all(24),
-                    height: 165,
-                    alignment: Alignment.centerLeft,
                     child: Text(
                       descrizione,
                       style: const TextStyle(

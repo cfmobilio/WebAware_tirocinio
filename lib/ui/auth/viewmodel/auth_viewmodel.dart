@@ -22,11 +22,27 @@ class AuthViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  final Map<String, bool> _initialBadges = {
+    'lock': false,
+    'banned': false,
+    'target': false,
+    'eyes': false,
+    'fact_check':false,
+    'key': false,
+    'private_detective': false,
+    'floppy_disk': false,
+    'earth': false,
+    'compass': false,
+  };
+
   Future<void> login(String email, String password) async {
     _setLoading(true);
     _errorMessage = null;
     try {
-      final cred = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final cred = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       await _fetchUserData(cred.user!.uid);
     } catch (e) {
       _errorMessage = e.toString();
@@ -44,15 +60,11 @@ class AuthViewModel with ChangeNotifier {
         password: password,
       );
 
-      final initialBadges = <String, bool>{
-        'primo_accesso': true,
-      };
-
       _user = UserModel(
         id: cred.user!.uid,
         name: name,
         email: email,
-        badges: initialBadges,
+        badges: Map.from(_initialBadges),
       );
 
       await _db.collection("users").doc(_user!.id).set(_user!.toMap());
@@ -86,7 +98,7 @@ class AuthViewModel with ChangeNotifier {
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         _setLoading(false);
-        return; // Annullato
+        return;
       }
 
       final googleAuth = await googleUser.authentication;
@@ -97,21 +109,14 @@ class AuthViewModel with ChangeNotifier {
 
       final userCred = await _auth.signInWithCredential(credential);
 
-      // Controlla se l'utente esiste già, altrimenti crealo
       final doc = await _db.collection("users").doc(userCred.user!.uid).get();
       if (!doc.exists) {
-        // Crea nuovo utente per login Google
-        final initialBadges = <String, bool>{
-          'primo_accesso': true,
-        };
-
         _user = UserModel(
           id: userCred.user!.uid,
           name: userCred.user!.displayName ?? 'Utente',
           email: userCred.user!.email!,
-          badges: initialBadges,
+          badges: Map.from(_initialBadges),
         );
-
         await _db.collection("users").doc(_user!.id).set(_user!.toMap());
       } else {
         await _fetchUserData(userCred.user!.uid);

@@ -74,7 +74,7 @@ class QAndAScreen extends StatelessWidget {
                   Card(
                     elevation: 12,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                    color: const Color(0xFFFD904C),
+                    color: Colors.deepOrange,
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Column(
@@ -98,8 +98,8 @@ class QAndAScreen extends StatelessWidget {
                               ),
                               value: index,
                               groupValue: vm.rispostaSelezionata,
-                              activeColor: Colors.white,
-                              selectedTileColor: Colors.white,
+                              activeColor: Colors.deepOrange,
+                              selectedTileColor: Colors.deepOrange,
                               onChanged: (value) => vm.selezionaRisposta(value!),
                             );
                           }),
@@ -120,14 +120,14 @@ class QAndAScreen extends StatelessWidget {
                         }
                             : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFD904C),
+                          backgroundColor: Colors.deepOrange,
                         ),
-                        child: const Text("Indietro", style: TextStyle(color: Colors.white)),
+                        child: const Text("Indietro", style: TextStyle(color: Colors.deepOrange)),
                       ),
                       ElevatedButton(
                         onPressed: vm.rispostaSelezionata != null ? vm.confermaRisposta : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFD904C),
+                          backgroundColor: Colors.deepOrange,
                         ),
                         child: const Text("Avanti", style: TextStyle(color: Colors.white)),
                       ),

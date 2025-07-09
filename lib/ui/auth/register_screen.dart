@@ -121,13 +121,45 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Pulsante Google (semplificato)
-              OutlinedButton.icon(
-                onPressed: () {
-                  // TODO: Integrazione Google Sign-In
-                },
-                icon: const Icon(Icons.account_circle),
-                label: const Text('Registrati con Google'),
+              // Pulsante Google - CORRETTO
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: OutlinedButton.icon(
+                    onPressed: viewModel.isLoading
+                        ? null
+                        : () async {
+                      await viewModel.signInWithGoogle();
+
+                      if (viewModel.errorMessage == null && context.mounted) {
+                        Navigator.pushReplacementNamed(context, '/home');
+                      }
+                    },
+                    icon: viewModel.isLoading
+                        ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                        : Image.asset(
+                      'assets/google_logo.png', // Aggiungi il logo Google
+                      width: 20,
+                      height: 20,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.account_circle);
+                      },
+                    ),
+                    label: const Text(
+                      'Registrati con Google',
+                      style: TextStyle(color: Colors.deepOrange),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.deepOrange),
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -139,7 +171,9 @@ class RegisterScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () async {
+                    onPressed: viewModel.isLoading
+                        ? null
+                        : () async {
                       // Controllo password uguali
                       if (_passwordController.text != _repeatPasswordController.text) {
                         ScaffoldMessenger.of(context).showSnackBar(
