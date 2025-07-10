@@ -17,7 +17,6 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header stile LinearLayout con back e titolo
             Container(
               height: 75,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -39,14 +38,13 @@ class LoginScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(width: 38), // Placeholder per simmetria
+                  const SizedBox(width: 38),
                 ],
               ),
             ),
 
             const SizedBox(height: 40),
 
-            // Logo
             Image.asset(
               'assets/fox_head.png',
               width: 159,
@@ -55,7 +53,6 @@ class LoginScreen extends StatelessWidget {
 
             const SizedBox(height: 48),
 
-            // Email field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: TextField(
@@ -71,7 +68,6 @@ class LoginScreen extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // Password field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: TextField(
@@ -85,7 +81,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
 
-            // "Hai dimenticato la password?"
             Padding(
               padding: const EdgeInsets.only(top: 4, right: 24),
               child: Align(
@@ -102,7 +97,6 @@ class LoginScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Login button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: SizedBox(

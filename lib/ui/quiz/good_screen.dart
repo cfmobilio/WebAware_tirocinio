@@ -9,19 +9,18 @@ class GoodPage extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.orange, // stesso colore dell'header
-        statusBarIconBrightness: Brightness.dark, // icone nere
+        statusBarColor: Colors.orange,
+        statusBarIconBrightness: Brightness.dark,
       ),
     );
 
     final topPadding = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: Colors.white, // evita la striscia bianca
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // HEADER personalizzato con padding per status bar
             Container(
               height: topPadding + 75,
               padding: EdgeInsets.only(top: topPadding, left: 16, right: 16),
@@ -35,7 +34,6 @@ class GoodPage extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // Immagine festa
             Image.asset('assets/party_popper.png', height: 120),
 
             const SizedBox(height: 16),
@@ -55,7 +53,6 @@ class GoodPage extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
-            // Pulsanti
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(

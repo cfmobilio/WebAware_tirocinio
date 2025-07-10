@@ -29,7 +29,6 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              // Logo + Titolo
                               Padding(
                                 padding: const EdgeInsets.all(24),
                                 child: Column(
@@ -53,7 +52,6 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              // Pulsanti
                               Padding(
                                 padding: const EdgeInsets.all(32),
                                 child: Column(

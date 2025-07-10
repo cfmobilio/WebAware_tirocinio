@@ -67,9 +67,8 @@ class HomeView extends StatelessWidget {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 0, // Indica che siamo nella home
+        currentIndex: 0,
         onTap: (index) {
-          // Evita di navigare alla stessa pagina
           if (index == 0) return;
 
           switch (index) {

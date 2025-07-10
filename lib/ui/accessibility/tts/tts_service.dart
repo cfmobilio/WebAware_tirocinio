@@ -13,7 +13,6 @@ class TtsService extends ChangeNotifier {
   bool _autoReadEnabled = false;
   String? _errorMessage;
 
-  // Getters
   bool get isInitialized => _isInitialized;
   bool get isSpeaking => _isSpeaking;
   bool get isEnabled => _isEnabled;
@@ -86,11 +85,9 @@ class TtsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Metodo per leggere automaticamente i contenuti quando si cambia pagina
   void readPageContent(BuildContext context) {
     if (!_autoReadEnabled || !_isEnabled) return;
 
-    // Delay per permettere alla pagina di caricarsi
     Future.delayed(const Duration(milliseconds: 500), () {
       final route = ModalRoute.of(context)?.settings.name;
       String pageContent = _getPageContent(route);

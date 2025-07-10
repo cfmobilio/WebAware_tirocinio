@@ -20,7 +20,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
       await context.read<AccessibilityViewModel>().loadSettings();
       await _ttsService.initialize();
 
-      // Leggi automaticamente il contenuto della pagina se l'auto-lettura è abilitata
       if (context.read<AccessibilityViewModel>().isAutoReadEnabled) {
         _ttsService.readPageContent(context);
       }
@@ -43,7 +42,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                   tooltip: "Torna indietro",
                 ),
                 actions: [
-                  // Pulsante per abilitare/disabilitare TTS globale
                   IconButton(
                     icon: Icon(
                       viewModel.isTtsEnabled ? Icons.volume_up : Icons.volume_off,
@@ -68,7 +66,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Descrizione della pagina
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -88,8 +85,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-
-                    // Switch Alto Contrasto
                     SwitchListTile(
                       title: const Text("Alto contrasto"),
                       subtitle: const Text("Migliora la visibilità con colori ad alto contrasto"),
@@ -102,8 +97,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // Switch Testo Ingrandito
                     SwitchListTile(
                       title: const Text("Testo ingrandito"),
                       subtitle: const Text("Aumenta la dimensione del testo per una migliore leggibilità"),
@@ -116,8 +109,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // Switch Lettura Vocale
                     SwitchListTile(
                       title: const Text("Lettura vocale"),
                       subtitle: const Text("Abilita la lettura automatica dei contenuti"),
@@ -134,8 +125,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // Switch Auto-lettura Pagine
                     SwitchListTile(
                       title: const Text("Auto-lettura pagine"),
                       subtitle: const Text("Leggi automaticamente i contenuti quando cambi pagina"),
@@ -149,15 +138,13 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                         } else {
                           _ttsService.speak("Auto-lettura delle pagine disattivata");
                         }
-                      } : null, // Disabilita se TTS non è attivo
+                      } : null,
                     ),
                     const SizedBox(height: 24),
 
-                    // Controlli TTS
                     if (viewModel.isTtsEnabled) ...[
                       Row(
                         children: [
-                          // Pulsante Test TTS
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: _ttsService.isInitialized ? () {
@@ -173,7 +160,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                           ),
                           const SizedBox(width: 12),
 
-                          // Pulsante Stop
                           if (_ttsService.isSpeaking)
                             ElevatedButton.icon(
                               onPressed: _ttsService.stop,
@@ -189,7 +175,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       const SizedBox(height: 16),
                     ],
 
-                    // Stato TTS
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -270,7 +255,6 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       ),
                     ],
 
-                    // Padding extra in basso per assicurare che tutto sia visibile
                     const SizedBox(height: 24),
                   ],
                 ),

@@ -36,7 +36,6 @@ import 'ui/initialtest/result/advanced_result_screen.dart';
 
 @pragma('vm:entry-point')
 Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-  print('Messaggio ricevuto in background: ${message.notification?.title}');
 }
 
 void main() async {

@@ -117,7 +117,6 @@ class _SupportPageState extends State<SupportPage> {
 
               const SizedBox(height: 24),
 
-              // Divider
               const Divider(color: Color(0xFFCCCCCC)),
 
               const SizedBox(height: 24),

@@ -13,7 +13,6 @@ class InsightViewModel {
         return Insight.fromFirestore(doc.data()!);
       }
     } catch (e) {
-      print("Errore nel caricamento di '$tipo': $e");
     }
     return null;
   }

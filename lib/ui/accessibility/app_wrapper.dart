@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
 import 'package:pro/ui/accessibility/tts/tts_page_wrapper.dart';
 
-/// Wrapper principale dell'app che applica automaticamente il TTS a tutte le pagine
 class AppWrapper extends StatelessWidget {
   final Widget child;
   final Widget Function(BuildContext context, Widget child) builder;
@@ -20,10 +19,9 @@ class AppWrapper extends StatelessWidget {
       builder: (context, accessibilityViewModel, child) {
         return MaterialApp(
           title: 'WebAware',
-          theme: accessibilityViewModel.getTheme(), // Applica il tema automaticamente
+          theme: accessibilityViewModel.getTheme(),
           home: child,
           builder: (context, child) {
-            // Wrappa automaticamente ogni pagina con TTS se abilitato
             if (accessibilityViewModel.isTtsEnabled) {
               return TtsPageWrapper(
                 child: child ?? Container(),
@@ -37,7 +35,6 @@ class AppWrapper extends StatelessWidget {
   }
 }
 
-/// Alternativa: Navigator Observer per controllare le transizioni
 class TtsNavigatorObserver extends NavigatorObserver {
   final AccessibilityViewModel accessibilityViewModel;
 
@@ -68,15 +65,8 @@ class TtsNavigatorObserver extends NavigatorObserver {
   void _handleRouteChange(Route<dynamic> route) {
     if (accessibilityViewModel.isTtsEnabled &&
         accessibilityViewModel.isAutoReadEnabled) {
-      // Qui puoi aggiungere logica per la lettura automatica
-      // basata sul nome della route
       Future.delayed(const Duration(milliseconds: 1000), () {
-        // Logica per determinare cosa leggere basandosi sulla route
         String content = _getContentForRoute(route.settings.name);
-        if (content.isNotEmpty) {
-          // Qui dovresti usare il tuo TtsService per leggere il contenuto
-          // _ttsService.speak(content);
-        }
       });
     }
   }

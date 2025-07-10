@@ -20,7 +20,6 @@ class BadScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // HEADER con padding per la status bar
             Container(
               height: topPadding + 75,
               padding: EdgeInsets.only(top: topPadding, left: 16, right: 16),
@@ -34,7 +33,6 @@ class BadScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // Immagine
             Image.asset('assets/decision_making.png', height: 120),
 
             const SizedBox(height: 24),
@@ -58,7 +56,6 @@ class BadScreen extends StatelessWidget {
 
             const SizedBox(height: 48),
 
-            // Bottoni
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(

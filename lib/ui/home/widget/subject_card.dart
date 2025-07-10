@@ -1,4 +1,3 @@
-// widgets/subject_card.dart
 import 'package:flutter/material.dart';
 import '../../../models/subject_model.dart';
 

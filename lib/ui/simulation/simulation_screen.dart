@@ -107,7 +107,7 @@ class SimulationScreen extends StatelessWidget {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 2, // Simulazioni
+        currentIndex: 2,
         onTap: (index) {
           switch (index) {
             case 0:

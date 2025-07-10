@@ -110,14 +110,13 @@ class _QuizPageState extends State<QuizPage> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 1, // Quiz
+        currentIndex: 1,
         onTap: (index) {
           switch (index) {
             case 0:
               Navigator.pushNamed(context, '/home');
               break;
             case 1:
-            // Sei già in Quiz
               break;
             case 2:
               Navigator.pushNamed(context, '/simulation');

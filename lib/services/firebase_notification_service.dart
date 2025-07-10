@@ -1,4 +1,3 @@
-// services/firebase_notification_service.dart
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -17,28 +16,20 @@ class FirebaseNotificationService {
   List<NotificationModel> _notifications = [];
   List<NotificationModel> get notifications => _notifications;
 
-  // Callback per aggiornare la UI
   Function(List<NotificationModel>)? onNotificationsChanged;
 
-  /// Inizializza il servizio notifiche
   Future<void> initialize() async {
-    // Richiedi permessi
     await _requestPermissions();
 
-    // Configura notifiche locali
     await _configureLocalNotifications();
 
-    // Configura Firebase Messaging
     await _configureFirebaseMessaging();
 
-    // Carica notifiche salvate
     await _loadSavedNotifications();
 
-    // Programma notifiche periodiche
     _schedulePeriodicNotifications();
   }
 
-  /// Richiedi permessi per le notifiche
   Future<void> _requestPermissions() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
@@ -50,14 +41,8 @@ class FirebaseNotificationService {
       sound: true,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('Permessi notifiche concessi');
-    } else {
-      print('Permessi notifiche negati');
-    }
   }
 
-  /// Configura le notifiche locali
   Future<void> _configureLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -81,46 +66,32 @@ class FirebaseNotificationService {
     );
   }
 
-  /// Configura Firebase Messaging
   Future<void> _configureFirebaseMessaging() async {
-    // Ottieni token FCM
     String? token = await _firebaseMessaging.getToken();
-    print('FCM Token: $token');
 
-    // Salva token nelle preferenze
     if (token != null) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('fcm_token', token);
     }
 
-    // Listener per messaggi in foreground
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
-    // Listener per quando l'app viene aperta da una notifica
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationOpened);
 
-    // Gestisci notifiche quando l'app è chiusa
     FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
   }
 
-  /// Gestisce messaggi in foreground
   void _handleForegroundMessage(RemoteMessage message) {
-    print('Messaggio ricevuto in foreground: ${message.notification?.title}');
 
-    // Crea notifica locale
     _showLocalNotification(message);
 
-    // Aggiungi alla lista
     _addNotificationToList(message);
   }
 
-  /// Gestisce apertura notifica
   void _handleNotificationOpened(RemoteMessage message) {
-    print('Notifica aperta: ${message.notification?.title}');
     _addNotificationToList(message);
   }
 
-  /// Mostra notifica locale
   Future<void> _showLocalNotification(RemoteMessage message) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
@@ -145,16 +116,12 @@ class FirebaseNotificationService {
     );
   }
 
-  /// Callback quando si tocca una notifica
   void _onNotificationTapped(NotificationResponse response) {
     if (response.payload != null) {
       final data = jsonDecode(response.payload!);
-      print('Notifica toccata con payload: $data');
-      // Naviga alla schermata appropriata
     }
   }
 
-  /// Aggiunge notifica alla lista
   void _addNotificationToList(RemoteMessage message) {
     final notification = NotificationModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -168,17 +135,14 @@ class FirebaseNotificationService {
 
     _notifications.insert(0, notification);
 
-    // Mantieni solo le ultime 50 notifiche
     if (_notifications.length > 50) {
       _notifications = _notifications.take(50).toList();
     }
 
-    // Salva e notifica i listeners
     _saveNotifications();
     onNotificationsChanged?.call(_notifications);
   }
 
-  /// Determina il tipo di notifica
   NotificationType _getNotificationType(Map<String, dynamic> data) {
     final type = data['type'] ?? 'info';
     switch (type) {
@@ -195,7 +159,6 @@ class FirebaseNotificationService {
     }
   }
 
-  /// Carica notifiche salvate
   Future<void> _loadSavedNotifications() async {
     final prefs = await SharedPreferences.getInstance();
     final notificationsJson = prefs.getString('notifications');
@@ -208,7 +171,6 @@ class FirebaseNotificationService {
     }
   }
 
-  /// Salva notifiche
   Future<void> _saveNotifications() async {
     final prefs = await SharedPreferences.getInstance();
     final notificationsJson = jsonEncode(
@@ -217,7 +179,6 @@ class FirebaseNotificationService {
     await prefs.setString('notifications', notificationsJson);
   }
 
-  /// Segna notifica come letta
   Future<void> markAsRead(String notificationId) async {
     final index = _notifications.indexWhere((n) => n.id == notificationId);
     if (index != -1) {
@@ -227,7 +188,6 @@ class FirebaseNotificationService {
     }
   }
 
-  /// Segna tutte come lette
   Future<void> markAllAsRead() async {
     _notifications = _notifications
         .map((notification) => notification.copyWith(isRead: true))
@@ -236,22 +196,18 @@ class FirebaseNotificationService {
     onNotificationsChanged?.call(_notifications);
   }
 
-  /// Elimina notifica
   Future<void> deleteNotification(String notificationId) async {
     _notifications.removeWhere((n) => n.id == notificationId);
     await _saveNotifications();
     onNotificationsChanged?.call(_notifications);
   }
 
-  /// Ottieni conteggio non lette
   int get unreadCount => _notifications.where((n) => !n.isRead).length;
 
-  /// Ottieni token FCM
   Future<String?> getFCMToken() async {
     return await _firebaseMessaging.getToken();
   }
 
-  /// Programma notifiche periodiche di sicurezza
   void _schedulePeriodicNotifications() {
     Future.doWhile(() async {
         await Future.delayed(const Duration(hours: 2));
@@ -260,7 +216,6 @@ class FirebaseNotificationService {
     });
   }
 
-  /// Invia notifica di test
   void _sendTestSecurityNotification() {
     final securityTips = [
       {
@@ -287,7 +242,6 @@ class FirebaseNotificationService {
 
     final randomTip = securityTips[DateTime.now().millisecondsSinceEpoch % securityTips.length];
 
-    // Simula un RemoteMessage
     final message = RemoteMessage(
       notification: RemoteNotification(
         title: randomTip['title'],
@@ -300,8 +254,6 @@ class FirebaseNotificationService {
   }
 }
 
-/// Gestisce messaggi in background (deve essere funzione top-level)
 @pragma('vm:entry-point')
 Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-  print('Messaggio ricevuto in background: ${message.notification?.title}');
 }

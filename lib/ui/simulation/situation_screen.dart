@@ -16,7 +16,6 @@ class _SituationScreenState extends State<SituationScreen> {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args == null || args is! String) {
-      // no args or wrong type
       _simulazioneFuture = Future.error("Nessuna simulazione selezionata.");
     } else {
       _simulazioneFuture = FirebaseFirestore.instance

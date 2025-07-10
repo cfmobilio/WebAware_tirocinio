@@ -1,4 +1,3 @@
-// screens/notification_center_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/notification_model.dart';
@@ -75,13 +74,10 @@ class _NotificationCenterScreenState extends State<NotificationCenterScreen>
           return TabBarView(
             controller: _tabController,
             children: [
-              // Tutte le notifiche
               _buildNotificationList(provider.notifications, provider),
 
-              // Notifiche non lette
               _buildNotificationList(provider.unreadNotifications, provider),
 
-              // Notifiche di sicurezza
               _buildNotificationList(
                 provider.notifications.where((n) =>
                 n.type == NotificationType.securityWarning ||
@@ -123,7 +119,6 @@ class _NotificationCenterScreenState extends State<NotificationCenterScreen>
 
     return RefreshIndicator(
       onRefresh: () async {
-        // Ricarica le notifiche
         await provider.initialize();
       },
       child: ListView.builder(

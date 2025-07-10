@@ -83,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 0, // sei nella home
+        currentIndex: 0,
         onTap: (index) {
           switch (index) {
             case 0:

@@ -40,13 +40,6 @@ class SimulationViewModel extends ChangeNotifier {
     return key;
   }
 
-  void debugPrintMappings() {
-    for (int i = 0; i < argomentiList.length; i++) {
-      final subject = argomentiList[i];
-      final key = getKeyForSubject(subject.titolo);
-    }
-  }
-
   Simulazione? simulazione;
   bool isLoading = false;
 
@@ -56,7 +49,7 @@ class SimulationViewModel extends ChangeNotifier {
 
     try {
       final doc = await FirebaseFirestore.instance
-          .collection('simulazioni')  // assicurati che il nome collezione sia corretto
+          .collection('simulazioni')
           .doc(id)
           .get();
 

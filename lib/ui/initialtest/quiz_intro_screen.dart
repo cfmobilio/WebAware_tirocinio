@@ -12,10 +12,9 @@ class QuizIntroScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 60),
 
-            // Immagine al centro
             Center(
               child: Image.asset(
-                'assets/fox_logo.png', // Cambia se usi un nome diverso
+                'assets/fox_logo.png',
                 height: 200,
                 fit: BoxFit.contain,
               ),
@@ -23,7 +22,6 @@ class QuizIntroScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            // Titolo: "Scopri il tuo livello!"
             const Text(
               'Scopri il tuo livello!',
               style: TextStyle(
@@ -36,7 +34,6 @@ class QuizIntroScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Testo descrittivo
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Text(
@@ -51,7 +48,6 @@ class QuizIntroScreen extends StatelessWidget {
 
             const Spacer(),
 
-            // Bottone "Pronto? Iniziamo!"
             Padding(
               padding: const EdgeInsets.only(bottom: 68.0),
               child: ElevatedButton(

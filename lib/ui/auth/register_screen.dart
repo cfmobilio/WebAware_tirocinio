@@ -20,7 +20,6 @@ class RegisterScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Header stile LinearLayout
               Container(
                 height: 75,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -42,14 +41,13 @@ class RegisterScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(width: 38), // simmetria
+                    const SizedBox(width: 38),
                   ],
                 ),
               ),
 
               const SizedBox(height: 48),
 
-              // Logo
               Image.asset(
                 'assets/fox_head.png',
                 width: 159,
@@ -58,7 +56,6 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Nome e Cognome
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: TextField(
@@ -73,7 +70,6 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 8),
 
-              // Email
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: TextField(
@@ -89,7 +85,6 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 8),
 
-              // Password
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: TextField(
@@ -105,7 +100,6 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 8),
 
-              // Ripeti Password
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: TextField(
@@ -121,7 +115,6 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Pulsante Google - CORRETTO
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: SizedBox(
@@ -144,7 +137,7 @@ class RegisterScreen extends StatelessWidget {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                         : Image.asset(
-                      'assets/google_logo.png', // Aggiungi il logo Google
+                      'assets/google_logo.png',
                       width: 20,
                       height: 20,
                       errorBuilder: (context, error, stackTrace) {
@@ -164,7 +157,6 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // Pulsante Registrati
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: SizedBox(
@@ -174,7 +166,6 @@ class RegisterScreen extends StatelessWidget {
                     onPressed: viewModel.isLoading
                         ? null
                         : () async {
-                      // Controllo password uguali
                       if (_passwordController.text != _repeatPasswordController.text) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

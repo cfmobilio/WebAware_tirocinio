@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:pro/ui/accessibility/tts/tts_service.dart';
 import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
 
-/// Widget che wrappa altre pagine per fornire funzionalità TTS automatiche
 class TtsPageWrapper extends StatefulWidget {
   final Widget child;
   final String? pageTitle;
@@ -49,7 +48,6 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
       return;
     }
 
-    // Delay per permettere alla pagina di caricarsi completamente
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted && !_hasReadContent) {
         _readPageContent();
@@ -70,22 +68,18 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
 
     List<String> textsToRead = [];
 
-    // Aggiungi il titolo della pagina se disponibile
     if (widget.pageTitle != null && widget.pageTitle!.isNotEmpty) {
       textsToRead.add(widget.pageTitle!);
     }
 
-    // Aggiungi la descrizione della pagina se disponibile
     if (widget.pageDescription != null && widget.pageDescription!.isNotEmpty) {
       textsToRead.add(widget.pageDescription!);
     }
 
-    // Aggiungi i testi personalizzati se disponibili
     if (widget.autoReadTexts != null && widget.autoReadTexts!.isNotEmpty) {
       textsToRead.addAll(widget.autoReadTexts!);
     }
 
-    // Se non ci sono testi personalizzati, usa il contenuto di default
     if (textsToRead.isEmpty) {
       final route = ModalRoute.of(context)?.settings.name;
       String defaultContent = _getPageContent(route);
@@ -94,7 +88,6 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
       }
     }
 
-    // Leggi tutti i testi concatenati
     if (textsToRead.isNotEmpty) {
       String fullText = textsToRead.join('. ');
       _ttsService.speak(fullText);
@@ -131,7 +124,6 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Reset del flag quando cambia la route
     _hasReadContent = false;
     if (_ttsService.isInitialized) {
       _scheduleAutoRead();
@@ -147,10 +139,8 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
           builder: (context, child) {
             return Stack(
               children: [
-                // Contenuto principale della pagina
                 widget.child,
 
-                // Indicatore di lettura TTS (opzionale)
                 if (_ttsService.isSpeaking && accessibilityViewModel.isTtsEnabled)
                   Positioned(
                     top: MediaQuery.of(context).padding.top + 16,
@@ -190,7 +180,6 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
                     ),
                   ),
 
-                // Pulsante per fermare la lettura (solo se TTS è attivo)
                 if (_ttsService.isSpeaking && accessibilityViewModel.isTtsEnabled)
                   Positioned(
                     top: MediaQuery.of(context).padding.top + 60,
@@ -212,7 +201,6 @@ class _TtsPageWrapperState extends State<TtsPageWrapper> {
 
   @override
   void dispose() {
-    // Ferma la lettura se la pagina viene chiusa
     if (_ttsService.isSpeaking) {
       _ttsService.stop();
     }

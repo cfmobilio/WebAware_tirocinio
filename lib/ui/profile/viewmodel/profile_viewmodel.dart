@@ -20,7 +20,6 @@ class ProfileViewModel extends ChangeNotifier {
         _user = UserModel.fromFirestore(doc.data()!);
       }
     } catch (e) {
-      print("Errore nel caricamento: $e");
     }
 
     _loading = false;
