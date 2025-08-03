@@ -12,10 +12,9 @@ import 'package:pro/ui/quiz/bad_screen.dart';
 import 'package:pro/ui/quiz/good_screen.dart';
 import 'package:pro/ui/quiz/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
-
+import 'package:pro/ui/simulation/simulation_fragment.dart';
+import 'package:pro/ui/simulation/simulation_selection_screen.dart';
 import 'package:pro/ui/profile/viewmodel/profile_viewmodel.dart';
-import 'package:pro/ui/simulation/simulation_screen.dart';
-import 'package:pro/ui/simulation/situation_screen.dart';
 
 import 'package:pro/ui/accessibility/accessibility_screen.dart';
 import 'package:pro/ui/auth/login_screen.dart';
@@ -144,15 +143,19 @@ class WebAwareApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => BadScreen());
 
                 case '/simulation':
-                  return MaterialPageRoute(
-                    builder: (_) => SimulationScreen(),
-                    settings: settings,
-                  );
+                  final args = settings.arguments as Map<String, dynamic>?;
 
-                case '/situation':
+                  if (args == null) {
+                    return MaterialPageRoute(
+                      builder: (_) => SimulationSelectionScreen(),
+                    );
+                  }
+
                   return MaterialPageRoute(
-                    builder: (_) => const SituationScreen(),
-                    settings: settings,
+                    builder: (_) => FastSimulationFragment(
+                      topic: args['topic'] as String,
+                      level: args['level'] as String,
+                    ),
                   );
 
                 case '/emergency':

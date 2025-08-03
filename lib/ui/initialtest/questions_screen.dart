@@ -27,7 +27,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     setState(() => _domande = questions);
   }
 
-  void _next() {
+  void _next() async {
     if (_selectedOption == _domande[_currentIndex].rispostaCorretta) {
       _score++;
     }
@@ -38,6 +38,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         _selectedOption = null;
       });
     } else {
+
+      await _viewModel.saveUserLevel(context, _score, _domande.length);
+
       final resultRoute = _viewModel.getResultRoute(_score);
       Navigator.pushReplacementNamed(context, resultRoute);
     }

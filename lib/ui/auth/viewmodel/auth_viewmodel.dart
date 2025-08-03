@@ -128,6 +128,28 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
+  String? get currentUserId => _user?.id;
+
+  Future<void> updateUserLevel(String level) async {
+    if (_user == null) return;
+
+    try {
+      await _db.collection("users").doc(_user!.id).update({'livello': level});
+
+      // Aggiorna il modello locale
+      _user = UserModel(
+        id: _user!.id,
+        name: _user!.name,
+        email: _user!.email,
+        livello: level,  // ← NUOVO LIVELLO
+        badges: _user!.badges,
+      );
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
   Future<void> _fetchUserData(String uid) async {
     final doc = await _db.collection("users").doc(uid).get();
     if (doc.exists) {
