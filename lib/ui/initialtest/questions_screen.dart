@@ -38,14 +38,26 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         _selectedOption = null;
       });
     } else {
+      // QUIZ FINITO - Debug dettagliato
+      print('🎯 QUIZ COMPLETATO!');
+      print('📊 Score finale: $_score/${_domande.length}');
 
+      // Salva il livello
       await _viewModel.saveUserLevel(context, _score, _domande.length);
 
+      // Verifica se è stato salvato
+      final tempLevel = InitialTestViewModel.getTempLevel();
+      print('🔍 Livello temporaneo dopo salvataggio: $tempLevel');
+
       final resultRoute = _viewModel.getResultRoute(_score);
+      print('🚀 Navigando verso: $resultRoute');
+
       Navigator.pushReplacementNamed(context, resultRoute);
     }
   }
 
+// AGGIUNGI ANCHE QUESTO IMPORT IN CIMA AL FILE
+// import 'package:pro/ui/initialtest/viewmodel/initial_test_viewmodel.dart';
   void _previous() {
     if (_currentIndex > 0) {
       setState(() {

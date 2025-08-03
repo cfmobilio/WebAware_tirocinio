@@ -8,10 +8,7 @@ class FastSimulationViewModel extends ChangeNotifier {
   String? selectedChoice;
   bool hasAnswered = false;
 
-  FastSimulationViewModel({required this.apiService}) {
-    // Pre-carica scenari popolari al startup
-    apiService.preloadPopularScenarios();
-  }
+  FastSimulationViewModel({required this.apiService});
 
   Future<void> loadSimulation(String topic, String level) async {
     print('🎮 Loading simulation: $topic - $level');

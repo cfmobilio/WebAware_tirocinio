@@ -62,7 +62,7 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
       }
 
       final userData = userDoc.data()!;
-      final level = userData['level'] as String?;
+      final level = userData['livello'] as String?;
 
       if (level == null || level.isEmpty) {
         throw Exception('Livello utente non definito');

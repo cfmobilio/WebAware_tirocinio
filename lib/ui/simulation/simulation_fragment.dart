@@ -23,21 +23,14 @@ class FastSimulationFragment extends StatelessWidget {
       )..loadSimulation(topic, level),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Simulazione: ${_getTopicDisplayName(topic)}"),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text("${_getTopicDisplayName(topic)}"),
+          backgroundColor: Colors.deepOrange,
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh),
               tooltip: 'Ricarica scenario',
               onPressed: () {
                 context.read<FastSimulationViewModel>().loadSimulation(topic, level);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.wifi_find),
-              tooltip: 'Test connessione',
-              onPressed: () {
-                context.read<FastSimulationViewModel>().forceReloadWithRetry(topic, level);
               },
             ),
           ],
@@ -105,46 +98,7 @@ class FastSimulationFragment extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Badge stato
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.flash_on, size: 16, color: Colors.white),
-                              SizedBox(width: 4),
-                              Text(
-                                'Caricamento veloce',
-                                style: TextStyle(color: Colors.white, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Spacer(),
-                        // Badge tipo scenario (AI vs Fallback)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade100,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            'Scenario educativo',
-                            style: TextStyle(
-                              color: Colors.blue.shade800,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 16),
-
                     // Scenario
                     Card(
                       elevation: 2,
@@ -158,7 +112,7 @@ class FastSimulationFragment extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                color: Colors.black,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -284,46 +238,6 @@ class FastSimulationFragment extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            TextButton.icon(
-                              onPressed: () => viewModel.forceReloadWithRetry(topic, level),
-                              icon: const Icon(Icons.wifi_find, size: 16),
-                              label: const Text(
-                                'Test connessione API',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    // Informazioni debug (solo in development)
-                    if (viewModel.hasAnswered == true)
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Info tecnica:',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Topic: $topic • Level: $level',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
                           ],
                         ),
                       ),

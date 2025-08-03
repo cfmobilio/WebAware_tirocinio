@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:pro/services/firebase_notification_service.dart';
+import 'package:pro/services/content_viewmodel.dart';
 import 'package:pro/ui/accessibility/tts/tts_page_wrapper.dart';
 import 'package:pro/ui/accessibility/tts/tts_service.dart';
 import 'package:pro/ui/accessibility/viewmodel/accessibility_viewmodel.dart';
@@ -56,6 +57,7 @@ class WebAwareApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => ContentViewModel()),
         ChangeNotifierProvider(
           create: (_) => AccessibilityViewModel()..loadSettings(),
         ),
