@@ -11,7 +11,6 @@ class QAndAScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => QuestionViewModel()..init(argomento),
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.deepOrange,
           title: const Text("WebAware", style: TextStyle(color: Colors.white)),
@@ -89,6 +88,7 @@ class QAndAScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
+                          // Soluzione 1: RadioListTile con fillColor trasparente
                           ...List.generate(domanda.opzioni.length, (index) {
                             return RadioListTile<int>(
                               contentPadding: EdgeInsets.zero,
@@ -98,8 +98,14 @@ class QAndAScreen extends StatelessWidget {
                               ),
                               value: index,
                               groupValue: vm.rispostaSelezionata,
-                              activeColor: Colors.deepOrange,
-                              selectedTileColor: Colors.deepOrange,
+                              activeColor: Colors.white,
+                              fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+                                if (states.contains(MaterialState.selected)) {
+                                  return Colors.white;
+                                }
+                                return Colors.black54;
+                              }),
+                              tileColor: Colors.transparent,
                               onChanged: (value) => vm.selezionaRisposta(value!),
                             );
                           }),
@@ -122,7 +128,7 @@ class QAndAScreen extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepOrange,
                         ),
-                        child: const Text("Indietro", style: TextStyle(color: Colors.deepOrange)),
+                        child: const Text("Indietro", style: TextStyle(color: Colors.white)),
                       ),
                       ElevatedButton(
                         onPressed: vm.rispostaSelezionata != null ? vm.confermaRisposta : null,

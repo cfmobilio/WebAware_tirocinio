@@ -1,109 +1,111 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../services/content_viewmodel.dart';
 import '../../models/content_model.dart';
 
 class LevelSelector extends StatelessWidget {
   final String argomento;
-  final int userAssignedLevel; // Livello assegnato dal quiz
+  final int userAssignedLevel;
   final Function(int)? onLevelChanged;
+  final ContentViewModel contentViewModel; // RICEVI IL VIEWMODEL DAL PADRE
 
   const LevelSelector({
     Key? key,
     required this.argomento,
     required this.userAssignedLevel,
+    required this.contentViewModel, // PARAMETRO OBBLIGATORIO
     this.onLevelChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ContentViewModel>(
-      builder: (context, contentViewModel, child) {
-        if (contentViewModel.availableLevels.isEmpty) {
-          return const SizedBox.shrink();
-        }
+    // NON PIÙ Consumer! Usa direttamente il ViewModel ricevuto
+    if (contentViewModel.availableLevels.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.tune,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Livello di Approfondimento',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (contentViewModel.selectedLevel != userAssignedLevel)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'Personalizzato',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                ],
+              Icon(
+                Icons.tune,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              const SizedBox(height: 12),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: contentViewModel.availableLevels.map((level) {
-                    final isSelected = level == contentViewModel.selectedLevel;
-                    final isUserLevel = level == userAssignedLevel;
-                    final levelName = contentViewModel.getLevelName(level);
-
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: _LevelChip(
-                        level: level,
-                        levelName: levelName,
-                        isSelected: isSelected,
-                        isUserAssignedLevel: isUserLevel,
-                        onTap: () async {
-                          await contentViewModel.changeLevel(argomento, level);
-                          onLevelChanged?.call(level);
-                        },
-                      ),
-                    );
-                  }).toList(),
+              const SizedBox(width: 8),
+              Text(
+                'Livello di dettaglio',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              if (contentViewModel.isLoading)
-                const Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: LinearProgressIndicator(),
+              const Spacer(),
+              if (contentViewModel.selectedLevel != userAssignedLevel)
+                Flexible( // Usa Flexible per fare spazio al contenuto
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Personalizzato',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis, // Gestisci il testo lungo
+                    ),
+                  ),
                 ),
             ],
           ),
-        );
-      },
+          const SizedBox(height: 12),
+
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,  // Imposta la direzione di scorrimento orizzontale
+            child: Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: contentViewModel.availableLevels.map((level) {
+                final isSelected = level == contentViewModel.selectedLevel;
+                final isUserLevel = level == userAssignedLevel;
+                final levelName = contentViewModel.getLevelName(level);
+
+                return _LevelChip(
+                  level: level,
+                  levelName: levelName,
+                  isSelected: isSelected,
+                  isUserAssignedLevel: isUserLevel,
+                  onTap: () async {
+                    await contentViewModel.changeLevel(argomento, level);
+                    onLevelChanged?.call(level);
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+
+          if (contentViewModel.isLoading)
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: LinearProgressIndicator(),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -206,7 +208,6 @@ class _LevelChip extends StatelessWidget {
   }
 }
 
-// Widget helper per mostrare il contenuto
 class ContentDisplay extends StatelessWidget {
   final ContentModel content;
 

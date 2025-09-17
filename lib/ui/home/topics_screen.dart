@@ -21,27 +21,10 @@ class _TopicsViewState extends State<TopicsView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Ottieni l'argomento dai parametri di navigazione
     final arguments = ModalRoute.of(context)?.settings.arguments;
     if (arguments is String) {
       argomentoKey = arguments;
-      _loadContent();
     }
-  }
-
-  void _loadContent() {
-    if (argomentoKey == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-      final contentViewModel = Provider.of<ContentViewModel>(context, listen: false);
-
-      // Ottieni il livello assegnato dal quiz iniziale
-      final userAssignedLevel = int.tryParse(authViewModel.user?.livello ?? '1') ?? 1;
-
-      // Carica il contenuto per questo argomento
-      contentViewModel.loadContent(argomentoKey!, userAssignedLevel: userAssignedLevel);
-    });
   }
 
   String? getYoutubeThumbnail(String url) {
@@ -56,7 +39,6 @@ class _TopicsViewState extends State<TopicsView> {
 
   @override
   Widget build(BuildContext context) {
-    // Controlli di validazione argomenti
     if (argomentoKey == null) {
       return Scaffold(
         appBar: AppBar(title: const Text("Errore")),
@@ -66,72 +48,82 @@ class _TopicsViewState extends State<TopicsView> {
       );
     }
 
-    return Consumer2<AuthViewModel, ContentViewModel>(
-      builder: (context, authViewModel, contentViewModel, child) {
-        final userAssignedLevel = int.tryParse(authViewModel.user?.livello ?? '1') ?? 1;
+    return ChangeNotifierProvider(
+      create: (_) => ContentViewModel(),
+      builder: (context, child) {
+        return Consumer2<AuthViewModel, ContentViewModel>(
+          builder: (context, authViewModel, contentViewModel, child) {
+            final userAssignedLevel = int.tryParse(authViewModel.user?.livello ?? '1') ?? 1;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: contentViewModel.currentContent != null
-                ? Text(contentViewModel.currentContent!.titolo)
-                : FutureBuilder<DocumentSnapshot>(
-              future: FirebaseFirestore.instance
-                  .collection('info_argomenti')
-                  .doc(argomentoKey!)
-                  .get(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("Caricamento...");
-                }
-                if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
-                  return const Text("Errore");
-                }
-                final data = snapshot.data!.data() as Map<String, dynamic>?;
-                final titolo = data?['titolo'] as String? ?? "Senza titolo";
-                return Text(titolo);
-              },
-            ),
-          ),
-          body: _buildBody(contentViewModel, userAssignedLevel),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.deepOrange,
-            selectedItemColor: Colors.black,
-            unselectedItemColor: Colors.white70,
-            type: BottomNavigationBarType.fixed,
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  Navigator.pushNamed(context, '/home');
-                  break;
-                case 1:
-                  Navigator.pushNamed(context, '/quiz');
-                  break;
-                case 2:
-                  Navigator.pushNamed(context, '/simulation');
-                  break;
-                case 3:
-                  Navigator.pushNamed(context, '/extra');
-                  break;
-                case 4:
-                  Navigator.pushNamed(context, '/emergency');
-                  break;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (argomentoKey != null && contentViewModel.currentContent == null && !contentViewModel.isLoading) {
+                contentViewModel.loadContent(argomentoKey!, userAssignedLevel: userAssignedLevel);
               }
-            },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
-              BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
-              BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
-              BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
-              BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
-            ],
-          ),
+            });
+
+            return Scaffold(
+              appBar: AppBar(
+                title: contentViewModel.currentContent != null
+                    ? Text(contentViewModel.currentContent!.titolo)
+                    : FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('info_argomenti')
+                      .doc(argomentoKey!)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text("Caricamento...");
+                    }
+                    if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+                      return const Text("Errore");
+                    }
+                    final data = snapshot.data!.data() as Map<String, dynamic>?;
+                    final titolo = data?['titolo'] as String? ?? "Senza titolo";
+                    return Text(titolo);
+                  },
+                ),
+              ),
+              body: _buildBody(contentViewModel, userAssignedLevel),
+              bottomNavigationBar: BottomNavigationBar(
+                backgroundColor: Colors.deepOrange,
+                selectedItemColor: Colors.black,
+                unselectedItemColor: Colors.white70,
+                type: BottomNavigationBarType.fixed,
+                onTap: (index) {
+                  switch (index) {
+                    case 0:
+                      Navigator.pushNamed(context, '/home');
+                      break;
+                    case 1:
+                      Navigator.pushNamed(context, '/quiz');
+                      break;
+                    case 2:
+                      Navigator.pushNamed(context, '/simulation');
+                      break;
+                    case 3:
+                      Navigator.pushNamed(context, '/extra');
+                      break;
+                    case 4:
+                      Navigator.pushNamed(context, '/emergency');
+                      break;
+                  }
+                },
+                items: const [
+                  BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+                  BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
+                  BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Simulazioni'),
+                  BottomNavigationBarItem(icon: Icon(Icons.visibility), label: 'Extra'),
+                  BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Emerg.'),
+                ],
+              ),
+            );
+          },
         );
       },
     );
   }
 
   Widget _buildBody(ContentViewModel contentViewModel, int userAssignedLevel) {
-    // Loading state
     if (contentViewModel.isLoading) {
       return const Center(
         child: Column(
@@ -145,7 +137,6 @@ class _TopicsViewState extends State<TopicsView> {
       );
     }
 
-    // Error state
     if (contentViewModel.errorMessage != null) {
       return Center(
         child: Column(
@@ -156,7 +147,10 @@ class _TopicsViewState extends State<TopicsView> {
             Text("Errore: ${contentViewModel.errorMessage}"),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => _loadContent(),
+              onPressed: () => contentViewModel.loadContent(
+                  argomentoKey!,
+                  userAssignedLevel: userAssignedLevel
+              ),
               child: const Text("Riprova"),
             ),
             ElevatedButton(
@@ -168,27 +162,24 @@ class _TopicsViewState extends State<TopicsView> {
       );
     }
 
-    // Content loaded state
     if (contentViewModel.currentContent != null) {
-      return _buildContentView(contentViewModel.currentContent!, userAssignedLevel);
+      return _buildContentView(contentViewModel.currentContent!, userAssignedLevel, contentViewModel);
     }
 
-    // Fallback to old system if no content is loaded
     return _buildFallbackView();
   }
 
-  Widget _buildContentView(ContentModel content, int userAssignedLevel) {
+  Widget _buildContentView(ContentModel content, int userAssignedLevel, ContentViewModel contentViewModel) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Level Selector
           LevelSelector(
             argomento: argomentoKey!,
             userAssignedLevel: userAssignedLevel,
+            contentViewModel: contentViewModel,
             onLevelChanged: (newLevel) {
-              // Opzionale: feedback quando cambia livello
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Passato al livello ${_getLevelName(newLevel)}'),
@@ -200,7 +191,6 @@ class _TopicsViewState extends State<TopicsView> {
 
           const SizedBox(height: 16),
 
-          // Video section
           if (content.videoUrl != null && content.videoUrl!.isNotEmpty) ...[
             GestureDetector(
               onTap: () => _launchVideo(content.videoUrl!),
@@ -254,7 +244,6 @@ class _TopicsViewState extends State<TopicsView> {
             const SizedBox(height: 16),
           ],
 
-          // Content description
           Expanded(
             child: SingleChildScrollView(
               child: Card(
@@ -286,7 +275,6 @@ class _TopicsViewState extends State<TopicsView> {
 
           const SizedBox(height: 16),
 
-          // Quiz button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(

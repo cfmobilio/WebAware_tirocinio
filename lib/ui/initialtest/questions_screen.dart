@@ -38,26 +38,14 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         _selectedOption = null;
       });
     } else {
-      // QUIZ FINITO - Debug dettagliato
-      print('🎯 QUIZ COMPLETATO!');
-      print('📊 Score finale: $_score/${_domande.length}');
-
-      // Salva il livello
       await _viewModel.saveUserLevel(context, _score, _domande.length);
 
-      // Verifica se è stato salvato
-      final tempLevel = InitialTestViewModel.getTempLevel();
-      print('🔍 Livello temporaneo dopo salvataggio: $tempLevel');
-
       final resultRoute = _viewModel.getResultRoute(_score);
-      print('🚀 Navigando verso: $resultRoute');
 
       Navigator.pushReplacementNamed(context, resultRoute);
     }
   }
 
-// AGGIUNGI ANCHE QUESTO IMPORT IN CIMA AL FILE
-// import 'package:pro/ui/initialtest/viewmodel/initial_test_viewmodel.dart';
   void _previous() {
     if (_currentIndex > 0) {
       setState(() {
@@ -81,7 +69,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            // Titolo domanda (es. "Domanda 1/10")
             Text(
               'Domanda ${_currentIndex + 1}/${_domande.length}',
               style: const TextStyle(
@@ -92,7 +79,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Card con domanda e opzioni
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -136,7 +122,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
             const SizedBox(height: 24),
 
-            // Pulsanti "Indietro" e "Avanti"
             Padding(
               padding: const EdgeInsets.only(bottom: 32, left: 24, right: 24),
               child: Row(
@@ -154,7 +139,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       child: const Text('Indietro'),
                     )
                   else
-                    const SizedBox(width: 100), // Spazio placeholder
+                    const SizedBox(width: 100),
 
                   ElevatedButton(
                     onPressed: _selectedOption == null ? null : _next,

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'dart:io';
 import 'dart:math' as math;
 import 'package:http/http.dart' as http;
@@ -15,8 +14,6 @@ class OptimizedDeepSeekService {
 
   Future<void> testApiConnection() async {
     try {
-      print('🧪 Testing API connection...');
-
       final response = await http.post(
         Uri.parse(baseUrl),
         headers: {
@@ -31,21 +28,13 @@ class OptimizedDeepSeekService {
         }),
       ).timeout(const Duration(seconds: 10));
 
-      print('✅ API Status: ${response.statusCode}');
       if (response.statusCode == 200) {
-        print('✅ API Connection successful');
-        final json = jsonDecode(response.body);
-        print('📝 Response: ${json['choices']?[0]?['message']?['content']}');
       } else {
-        print('❌ API Error: ${response.body}');
       }
 
     } catch (e) {
-      print('💥 API Test failed: $e');
       if (e is SocketException) {
-        print('🌐 Network connection problem');
       } else if (e is TimeoutException) {
-        print('⏱️ API timeout - DeepSeek not responding');
       }
     }
   }
@@ -55,7 +44,6 @@ class OptimizedDeepSeekService {
       final result = await InternetAddress.lookup('google.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } catch (e) {
-      print('🌐 No internet connection: $e');
       return false;
     }
   }
@@ -66,35 +54,25 @@ class OptimizedDeepSeekService {
   }) async {
     final cacheKey = '${topic}_$level';
 
-    print('🔍 Looking for cache key: $cacheKey');
-    print('📦 Available cache keys: ${_scenarioCache.keys.toList()}');
-    print('📊 Cache sizes: ${_scenarioCache.map((k, v) => MapEntry(k, v.length))}');
 
     if (_scenarioCache.containsKey(cacheKey) && _scenarioCache[cacheKey]!.isNotEmpty) {
-      print('📦 Cache content for $cacheKey: ${_scenarioCache[cacheKey]}');
       final scenario = _scenarioCache[cacheKey]!.removeAt(0);
-      print('✅ Using cached scenario from: $cacheKey');
-      print('📋 Remaining in cache: ${_scenarioCache[cacheKey]!.length}');
 
       _refillCacheInBackground(topic, level);
       return scenario;
     }
 
-    print('❌ No cache found for: $cacheKey');
 
     try {
-      print('🚀 Generating immediately for: $cacheKey');
       final scenarios = await _generateMultipleScenarios(topic, level, count: 3);
       if (scenarios.isNotEmpty) {
-        print('✅ Generated immediate scenario');
         _generateAndCacheInBackground(topic, level);
         return scenarios[math.Random().nextInt(scenarios.length)];
       }
     } catch (e) {
-      print('❌ Immediate generation failed: $e');
     }
 
-    throw Exception('❌ Scenario generation failed and no cache available');
+    throw Exception('Scenario generation failed and no cache available');
   }
 
   String _buildOptimizedPrompt(String topic, String level, int count) {
@@ -148,7 +126,7 @@ Rispondi SOLO con un array JSON valido:
       }
     }
 
-    throw Exception('❌ Failed to generate or parse scenarios');
+    throw Exception('Failed to generate or parse scenarios');
   }
 
   void _generateAndCacheInBackground(String topic, String level) async {
@@ -161,9 +139,7 @@ Rispondi SOLO con un array JSON valido:
       final newScenarios = await _generateMultipleScenarios(topic, level, count: 3);
       _scenarioCache.putIfAbsent(cacheKey, () => []);
       _scenarioCache[cacheKey]!.addAll(newScenarios);
-      print('✅ Cache refilled for $cacheKey (${newScenarios.length} scenarios)');
     } catch (e) {
-      print('❌ Background cache refill failed: $e');
     }
   }
 }

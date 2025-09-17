@@ -50,7 +50,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
         throw Exception('Utente non autenticato');
       }
 
-      print('🔍 Loading level for user: ${user.uid}');
 
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -78,10 +77,8 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
         isLoadingLevel = false;
       });
 
-      print('✅ User level loaded: $level');
 
     } catch (e) {
-      print('❌ Error loading user level: $e');
       setState(() {
         errorMessage = e.toString();
         isLoadingLevel = false;
@@ -100,7 +97,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
       return;
     }
 
-    print('🚀 Starting simulation: $selectedTopic - $userLevel');
 
     Navigator.pushNamed(
       context,
@@ -279,13 +275,13 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info_outline, color: Colors.blue.shade700),
+                        Icon(Icons.info_outline, color: Colors.deepOrange),
                         const SizedBox(width: 8),
                         Text(
-                          'Informazioni sulla simulazione',
+                          'Informazioni simulazione',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade700,
+                            color: Colors.deepOrange,
                           ),
                         ),
                       ],
@@ -361,7 +357,7 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 2, // Evidenzia "Simulazioni"
+        currentIndex: 2,
         onTap: (index) {
           switch (index) {
             case 0:

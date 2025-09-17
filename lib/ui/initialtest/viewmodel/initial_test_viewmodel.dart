@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../../models/question_model.dart';
-import '../../auth/viewmodel/auth_viewmodel.dart';
 
 class InitialTestViewModel {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Variabile statica per salvare temporaneamente il livello
   static String? _tempLevel;
 
   Future<List<Question>> fetchQuestions() async {
@@ -24,11 +21,7 @@ class InitialTestViewModel {
   Future<void> saveUserLevel(BuildContext context, int score, int totalQuestions) async {
     final level = _calculateLevel(score, totalQuestions);
 
-    // Salva temporaneamente il livello
     _tempLevel = level;
-    print('💾 Livello salvato temporaneamente: $level per score $score/$totalQuestions');
-
-    // Non tentare di aggiornare il database se l'utente non esiste ancora
   }
 
   String _calculateLevel(int score, int total) {
@@ -38,7 +31,6 @@ class InitialTestViewModel {
     return 'elementare';
   }
 
-  // Metodi statici per gestire il livello temporaneo
   static String? getTempLevel() => _tempLevel;
   static void clearTempLevel() => _tempLevel = null;
 }
