@@ -6,19 +6,18 @@ class LevelSelector extends StatelessWidget {
   final String argomento;
   final int userAssignedLevel;
   final Function(int)? onLevelChanged;
-  final ContentViewModel contentViewModel; // RICEVI IL VIEWMODEL DAL PADRE
+  final ContentViewModel contentViewModel;
 
   const LevelSelector({
     Key? key,
     required this.argomento,
     required this.userAssignedLevel,
-    required this.contentViewModel, // PARAMETRO OBBLIGATORIO
+    required this.contentViewModel,
     this.onLevelChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // NON PIÙ Consumer! Usa direttamente il ViewModel ricevuto
     if (contentViewModel.availableLevels.isEmpty) {
       return const SizedBox.shrink();
     }
