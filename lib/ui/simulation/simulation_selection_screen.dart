@@ -50,7 +50,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
         throw Exception('Utente non autenticato');
       }
 
-
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -67,7 +66,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
         throw Exception('Livello utente non definito');
       }
 
-      // Verifica che il livello sia valido
       if (!levelDisplayNames.containsKey(level)) {
         throw Exception('Livello utente non valido: $level');
       }
@@ -76,7 +74,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
         userLevel = level;
         isLoadingLevel = false;
       });
-
 
     } catch (e) {
       setState(() {
@@ -96,7 +93,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
       );
       return;
     }
-
 
     Navigator.pushNamed(
       context,
@@ -138,16 +134,19 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 children: [
                   Icon(Icons.error, color: Colors.red.shade700),
                   const SizedBox(width: 8),
-                  Text(
-                    'Errore nel caricamento del livello',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red.shade700,
+                  Expanded(
+                    child: Text(
+                      'Errore nel caricamento del livello',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red.shade700,
+                      ),
                     ),
                   ),
                 ],
@@ -156,16 +155,6 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
               Text(
                 errorMessage!,
                 style: TextStyle(color: Colors.red.shade600),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton.icon(
-                onPressed: _loadUserLevel,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Riprova'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade100,
-                  foregroundColor: Colors.red.shade700,
-                ),
               ),
             ],
           ),
@@ -183,6 +172,7 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'Il tuo livello:',
@@ -227,130 +217,159 @@ class _SimulationSelectionScreenState extends State<SimulationSelectionScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Informazioni sul livello utente
-            _buildLevelInfo(),
+      body: Column(
+        children: [
+          // Area scrollabile
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Informazioni sul livello utente
+                  _buildLevelInfo(),
 
-            const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-            Text(
-              'Scegli un argomento:',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-
-            // Dropdown per la selezione del topic
-            DropdownButtonFormField<String>(
-              value: selectedTopic,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Argomento',
-                prefixIcon: Icon(Icons.topic),
-              ),
-              items: topics.entries.map((entry) {
-                return DropdownMenuItem(
-                  value: entry.key,
-                  child: Text(entry.value),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedTopic = value!;
-                });
-              },
-            ),
-
-            const SizedBox(height: 24),
-
-            // Info sulla simulazione
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.info_outline, color: Colors.deepOrange),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Informazioni simulazione',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Argomento: ${topics[selectedTopic]}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      userLevel != null
-                          ? 'Livello: ${levelDisplayNames[userLevel!]}'
-                          : 'Livello: Non disponibile',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const Spacer(),
-
-            // Pulsante per iniziare la simulazione
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: (userLevel != null && !isLoadingLevel)
-                    ? _startSimulation
-                    : null,
-                icon: isLoadingLevel
-                    ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  Text(
+                    'Scegli un argomento:',
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                )
-                    : const Icon(Icons.play_arrow),
-                label: Text(
-                  isLoadingLevel
-                      ? 'Caricamento...'
-                      : 'Inizia Simulazione',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: (userLevel != null && !isLoadingLevel)
-                      ? Colors.deepOrangeAccent
-                      : Colors.grey.shade400,
-                  foregroundColor: Colors.white,
-                ),
+                  const SizedBox(height: 16),
+
+                  // Dropdown per la selezione del topic
+                  DropdownButtonFormField<String>(
+                    value: selectedTopic,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Argomento',
+                      prefixIcon: Icon(Icons.topic),
+                    ),
+                    items: topics.entries.map((entry) {
+                      return DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedTopic = value!;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Info sulla simulazione
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.info_outline, color: Colors.deepOrange),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Informazioni simulazione',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.deepOrange,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Argomento: ${topics[selectedTopic]}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            userLevel != null
+                                ? 'Livello: ${levelDisplayNames[userLevel!]}'
+                                : 'Livello: Non disponibile',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Spazio extra per evitare che il pulsante copra il contenuto
+                  const SizedBox(height: 80),
+                ],
               ),
             ),
+          ),
 
-            if (userLevel == null && !isLoadingLevel) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Risolvi il problema del livello utente per continuare',
-                style: TextStyle(
-                  color: Colors.red.shade600,
-                  fontSize: 14,
+          // Pulsante fisso in basso (fuori dallo scroll)
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, -2),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ],
-        ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: (userLevel != null && !isLoadingLevel)
+                        ? _startSimulation
+                        : null,
+                    icon: isLoadingLevel
+                        ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                        : const Icon(Icons.play_arrow),
+                    label: Text(
+                      isLoadingLevel
+                          ? 'Caricamento...'
+                          : 'Inizia Simulazione',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: (userLevel != null && !isLoadingLevel)
+                          ? Colors.deepOrangeAccent
+                          : Colors.grey.shade400,
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: Colors.grey.shade300,
+                      disabledForegroundColor: Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+
+                if (userLevel == null && !isLoadingLevel) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Risolvi il problema del livello utente per continuare',
+                    style: TextStyle(
+                      color: Colors.red.shade600,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.deepOrange,
